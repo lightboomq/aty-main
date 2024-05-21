@@ -1,0 +1,7 @@
+.imgThemeIcon{
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition-property: transform;
+    transition-duration: 0.4s;
+}

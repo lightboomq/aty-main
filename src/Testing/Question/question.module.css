@@ -1,0 +1,90 @@
+.divTest{
+    background-color: red;
+}
+.divWrapperInfo{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.divWrapperImg{
+    width: 100%;
+    
+}
+.imgQuestion{
+    width: 100%;
+}
+
+.divQuestionWithoutPicture{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: clamp(130px, 35vw, 355px);
+    font-size: clamp(25px, 8vw, 50px); 
+}
+.divQuestionWithoutPicture.darkMode{
+    color:white;
+}
+.divQuestionWithoutPicture.systemMode{
+    color:#8f8f8f;
+}
+
+.infoCount.darkMode{
+    color:#cdcdcd;
+}
+.infoCount.systemMode{
+    color:black;
+}
+
+.h3QuestionTitle{
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: calc(14px + 4 * (100vw / 1871)); 
+}
+.h3QuestionTitle.darkMode{
+    color:#cdcdcd;
+    border-bottom: 1px solid #cdcdcd;
+}
+.h3QuestionTitle.systemMode{
+    color:black;
+    border-bottom: 1px solid rgb(151, 149, 149);
+}
+
+
+
+.liAnswer{
+    display: inline-block;
+    margin-top: 15px;
+    color: #158bec;
+    cursor: pointer;
+    font-size: calc(14px + 4 * (100vw / 1871));
+    user-select: none;
+    /* формула адаптивного размера шрифта - где:
+        100vw - где 1% это 1 viewport (окно просмотра) Width от ширины экрана
+        1024 - ширина род.контейнера  
+        Изначальный размер шрифта 18px (на пк)
+        минимальный размер шрифта 14px (на мобилке)
+        18px(пк) - 14px(мобилка) = 4
+        font-size: calc(14px + 4 *(100vw / ширина body))
+    */
+}
+.liAnswer.darkMode{
+    color:#cdcdcd;
+}
+.liAnswer.darkMode:hover{
+    color: #5399e9;
+}
+.liAnswer:hover{
+    color:rgb(44, 87, 231);
+}
+
+
+
+
+
+
+
+
+
+

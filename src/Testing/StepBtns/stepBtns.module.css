@@ -1,0 +1,13 @@
+.divWrapperBtns{
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+.btn{
+    all: unset;
+    color: orange;
+    cursor: pointer;
+}
+.btn:hover{
+    color: rgba(209, 207, 59, 0.87);
+}

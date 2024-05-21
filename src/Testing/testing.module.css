@@ -1,0 +1,36 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+    scrollbar-gutter: stable;
+}
+
+.divWrapper{
+    width: 100%;
+    min-height: 100vh;
+    transition-property:background-color;
+    transition-duration: 0.5s;
+}
+.divWrapperContent{
+    max-width: 1024px;
+    margin: auto;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    border-radius: 10px;
+    /* padding: 20px; */
+    transition-property:background-color;
+    transition-duration: 0.5s;
+}
+
+.divWrapperContent.darkMode{
+    background-color: #17212B;
+}
+
+.darkMode{
+    background-color: #070B11;
+}
+.systemMode{
+    background-color: white;
+}
+
+

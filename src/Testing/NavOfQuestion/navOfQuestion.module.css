@@ -1,0 +1,45 @@
+.olWrapper{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    overflow-x: auto;
+}
+.questionByNav{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 36px;
+    height: 35px;
+    background-color: #ececec;
+    border-radius: 5px;
+    cursor: pointer;
+    transition-property: background-color;
+    transition-duration: 0.5s;
+    margin-left: 13px;
+}
+.questionByNav:first-child{
+    margin-left: 0px;
+}
+.highlightInBlue{
+    background-color: #AED9E8;
+    border: 1px solid gray;
+}
+.highlightInRed{
+    background-color: rgb(175, 66, 66);
+    color: white;
+}
+.highlightInGreen{
+    background-color: green;
+    color: white;
+}
+.darkMode{
+    background-color: #15153d;
+    color:#cdcdcd;
+}
+.systemMode{
+    background-color: #D3D3D3;
+    color: black;
+}
+
+
+

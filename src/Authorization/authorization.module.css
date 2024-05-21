@@ -1,0 +1,61 @@
+.wrapper{
+    margin: auto;
+    max-width:500px;
+    background-color: white;
+    border-radius: 10px;
+    margin-top: 30px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding:10px 0px 30px 0px;
+}
+
+.regText{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}
+.wrapperInput{
+    display: flex;
+    align-items: center;
+    padding: 12px 0 12px 0;
+    width: 70%;
+    border: 1px solid rgb(138, 137, 137);
+    margin: auto;
+    padding-left: 5px;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+.input{
+    all: unset;
+    width: 56%;
+    padding-left: 5px;
+}
+input::placeholder{
+    color: black;
+}
+.btnEnter{
+    all: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px 5px 10px;
+    margin: auto;
+    cursor: pointer;
+    background-color: rgb(0, 153, 255);
+    border-radius: 5px;
+    margin-top: 10px;
+    color:white;
+}
+
+.wrapperLink{
+    text-align: center;
+    margin-top: 20px;
+}
+.linkReg{
+    color: blue;
+    font-size: 14px;
+    cursor: pointer;
+}
+.highlightingInputErr{
+    border: 1px solid red;
+}
