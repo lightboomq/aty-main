@@ -13,31 +13,28 @@ function NavOfQuestion({ ticket, userAnswerFlags, indexTicket, setIndexTicket })
         return `${s.questionByNav} ${s[ModeStorage.theme]}`;
     }
 
- 
-    const olRef = React.useRef(null);
+    const navOl = React.useRef(null);
 
-    const [currentLiCoordX, setCurrentLiCoordX] = React.useState(0);
-
-    console.log(currentLiCoordX)
-    console.log(currentLiCoordX-100)
-    React.useEffect(() => {
-        olRef.current.scrollBy({
+    function scrollNavigation(selectedTagLi) {
+        navOl.current.scrollBy({
             top: 0,
-            left: currentLiCoordX-100,
-            behavior: 'smooth',
+            left: selectedTagLi - 160,
+            behavior: 'smooth'
         });
-    }, [currentLiCoordX]);
+    }
 
     function getQuestionByNav(e) {
         const index = e.target.id;
         if (e.target.tagName !== 'LI' || ticket[index].correctAnswer) return;
 
-        setCurrentLiCoordX(e.target.getBoundingClientRect().left);
+        const selectedTagLi = e.target.getBoundingClientRect().right;
+        scrollNavigation(selectedTagLi);
+
         setIndexTicket(Number(index));
     }
 
     return (
-        <ol id={'olNav'} ref={olRef} onClick={getQuestionByNav} className={s.olWrapper}>
+        <ol id={'navOl'} ref={navOl} onClick={getQuestionByNav} className={s.olWrapper}>
             {ticket.map((obj, i) => {
                 return (
                     <li key={obj.question} id={i} className={highlight(i)}>

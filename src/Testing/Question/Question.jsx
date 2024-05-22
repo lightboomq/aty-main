@@ -18,16 +18,19 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
         }
     }, [navigate, ticket, userAnswerFlags]);
 
+    
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const selectedTicket = localStorage.getItem('selectedTicket');
 
         const ticketNumber = Number(ticket[indexTicket].ticketNumber);
+
+        console.log(ticketNumber);
         const indexAnswer = Number(e.target.getAttribute('index'));
         const idAnswer = e.target.getAttribute('id');
 
-        const url =
-            selectedTicket === 'Экзамен' ? `http://localhost:3333/exam/${ticketNumber}` : `http://localhost:3333/tickets/${selectedTicket}`;
+        const url = selectedTicket === 'Экзамен' ? `http://localhost:3333/exam/${ticketNumber}` : 'http://localhost:3333/tickets/3';
+
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -41,6 +44,8 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
         });
 
         const json = await response.json();
+
+        console.log(json);
 
         userAnswerFlags.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
         setUserAnswerFlags([...userAnswerFlags]);
@@ -56,23 +61,14 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
         const foundId = copyTicket[indexTicket].correctAnswer;
         const test = copyTicket[indexTicket].answers.findIndex(el => el.id === foundId);
         copyTicket[indexTicket].answers[test].correctAnswer = true;
+
+        console.log(copyTicket);
         setTicket(copyTicket);
 
         takeStepAfterAnswering();
     }
 
-    const [liCoordX, setLiCoordX] = React.useState(0);
     function takeStepAfterAnswering() {
-        const olNav = document.getElementById('olNav');
-        const liNav = document.getElementById(indexTicket);
-
-        olNav.current.scrollBy({
-            top: 0,
-            left: liCoordX + 40,
-            behavior: 'smooth',
-        });
-
-      
         let step = indexTicket;
 
         if (step === ticket.length - 1) step = -1;
@@ -82,6 +78,15 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
             step++;
             if (step === ticket.length - 1) break;
         }
+
+        const navOl = document.getElementById('navOl');
+        const navLi = document.getElementById(step);
+
+        navOl.scrollBy({
+            top: 0,
+            left: navLi.getBoundingClientRect().right - 160,
+            behavior: 'smooth',
+        });
 
         return setIndexTicket(step);
     }

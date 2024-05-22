@@ -2,6 +2,7 @@ import React from 'react';
 import s from './select.module.css';
 import { useNavigate } from 'react-router-dom';
 
+
 function SelectTicket() {
 
     const navigate = useNavigate();
@@ -35,7 +36,7 @@ function SelectTicket() {
         localStorage.setItem('selectedTicket', index);
         const selectedTicket = localStorage.getItem('selectedTicket');
 
-        const url = selectedTicket === 'Экзамен' ? 'http://localhost:3333/exam' : `http://localhost:3333/tickets/${selectedTicket}`;
+        const url = selectedTicket === 'Экзамен' ? 'http://localhost:3333/exam' : `http://localhost:3333/tickets/${3}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -45,7 +46,7 @@ function SelectTicket() {
         });
 
         const ticketJson = await response.json();
-
+    
         localStorage.setItem('ticketJson', JSON.stringify(ticketJson));
 
         navigate('/test');
