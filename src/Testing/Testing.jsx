@@ -14,6 +14,8 @@ function Testing() {
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswerFlags, setUserAnswerFlags] = React.useState([]);
 
+   
+
     React.useEffect(() => {
         function getTicketFromLocaleStorage() {
             const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));

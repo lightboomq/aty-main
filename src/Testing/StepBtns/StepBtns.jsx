@@ -1,3 +1,4 @@
+import React from 'react';
 import s from './stepBtns.module.css';
 function StepBtns({ ticket, userAnswerFlags, indexTicket, setIndexTicket }) {
     function scrollNav(step) {
@@ -15,19 +16,15 @@ function StepBtns({ ticket, userAnswerFlags, indexTicket, setIndexTicket }) {
         let step = indexTicket;
 
         step++;
-        
-        if (step === ticket.length) {
-            step = userAnswerFlags.indexOf(null);
+        while (userAnswerFlags[step] !== null) {
+            if (step === ticket.length) {
+                step = 0;
+            }
+            else{
+                step++;
+            }
         }
-        
-        console.log('step: ', step)
-        if (userAnswerFlags[step] !== null) {
-            console.log('lenght: ', ticket.length-1);
-            console.log('step: ', step);
-            console.log(step === ticket.lenght - 1)
-            step = userAnswerFlags.indexOf(null, step === ticket.lenght - 1 ? 0 : step);
-        }
-
+        scrollNav(step);
         return setIndexTicket(step);
     }
 
@@ -35,10 +32,12 @@ function StepBtns({ ticket, userAnswerFlags, indexTicket, setIndexTicket }) {
         let step = indexTicket;
 
         step--;
-        if (step === -1) step = ticket.length - 1;
         while (userAnswerFlags[step] !== null) {
-            step--;
-            if (step === -1) step = ticket.length - 1;
+            if (step === -1) {
+                step = ticket.length - 1;
+            } else {
+                step--;
+            }
         }
         scrollNav(step);
         return setIndexTicket(step);

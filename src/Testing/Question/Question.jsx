@@ -9,15 +9,6 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
     const navigate = useNavigate();
     const selectedTicket = localStorage.getItem('selectedTicket');
 
-    React.useEffect(() => {
-        if (!userAnswerFlags.includes(null) && userAnswerFlags.length === ticket.length) {
-            const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);
-            localStorage.setItem('readyTicket', JSON.stringify(ticket));
-            localStorage.setItem('correctAnswers', correctAnswers);
-            return navigate('/result');
-        }
-    }, [navigate, ticket, userAnswerFlags]);
-
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const selectedTicket = localStorage.getItem('selectedTicket');
@@ -30,7 +21,6 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
         const url =
             selectedTicket === 'Экзамен' ? `http://localhost:3333/exam/${ticketNumber}` : `http://localhost:3333/tickets/${selectedTicket}`;
 
-            
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -68,14 +58,23 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
     }
 
     function takeStepAfterAnswering(indexTicket) {
+
+        if (!userAnswerFlags.includes(null) && userAnswerFlags.length === ticket.length) { //Проверка ответов на все вопросы 
+            const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);
+            localStorage.setItem('readyTicket', JSON.stringify(ticket));
+            localStorage.setItem('correctAnswers', correctAnswers);
+            return navigate('/result');
+        }
+
         let step = indexTicket;
 
-        if (step === ticket.length - 1) step = -1;
         step++;
         while (userAnswerFlags[step] !== null) {
-            if (step === ticket.length - 1) step = -1;
-            step++;
-            if (step === ticket.length - 1) break;
+            if (step === ticket.length) {
+                step = 0;
+            } else {
+                step++;
+            }
         }
 
         const navOl = document.getElementById('navOl');
@@ -86,7 +85,6 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
             left: navLi.getBoundingClientRect().right - 160,
             behavior: 'smooth',
         });
-
         return setIndexTicket(step);
     }
 

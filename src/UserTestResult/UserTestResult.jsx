@@ -26,9 +26,11 @@ function UserResultTest({ theme, setTheme }) {
 
                 <div className={s.divWrapperInfo}>
                     {correctAnswers < ticket.length - 2 ? (
-                        <h2 className={s.didNotPass}>{userDidNotPass}</h2>
+                        <h2 className={s.didNotPass}>
+                            {selectedTicket === 'Экзамен' ? `${userDidNotPass}` : `Билет №  ${userDidNotPass}`}
+                        </h2>
                     ) : (
-                        <h2 className={s.passed}>{userPassed}</h2>
+                        <h2 className={s.passed}>{selectedTicket === 'Экзамен' ? `${userPassed}` : `Билет №  ${userPassed}`}</h2>
                     )}
 
                     <h3 className={s.info}>{`Правильных ответов ${correctAnswers} из ${ticket.length}`}</h3>
@@ -66,7 +68,13 @@ function UserResultTest({ theme, setTheme }) {
                                     </ol>
 
                                     <div className={s.wrapperHelp}>
-                                        {obj.help ? <h4>Правильный ответ: {obj.answers.findIndex(answer=>answer.id === obj.correctAnswer)+1}</h4> : ''}
+                                        {obj.help ? (
+                                            <h4>
+                                                Правильный ответ: {obj.answers.findIndex(answer => answer.id === obj.correctAnswer) + 1}
+                                            </h4>
+                                        ) : (
+                                            ''
+                                        )}
                                         <p>{obj.help}</p>
                                     </div>
                                 </div>

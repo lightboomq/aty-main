@@ -3,6 +3,7 @@
     display: flex;
     justify-content: space-between;
     overflow-x: auto;
+    margin-top: 15px;
 }
 .questionByNav{
     display: flex;
@@ -13,8 +14,6 @@
     background-color: #ececec;
     border-radius: 5px;
     cursor: pointer;
-    transition-property: background-color;
-    transition-duration: 0.5s;
     margin-left: 13px;
 }
 .questionByNav:first-child{
@@ -33,7 +32,7 @@
     color: white;
 }
 .darkMode{
-    background-color: #15153d;
+    background-color: #070B11;
     color:#cdcdcd;
 }
 .systemMode{
