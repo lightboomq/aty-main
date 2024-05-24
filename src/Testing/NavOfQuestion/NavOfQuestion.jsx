@@ -15,7 +15,7 @@ function NavOfQuestion({ ticket, userAnswerFlags, indexTicket, setIndexTicket })
 
     const navOl = React.useRef(null);
 
-    function scrollNavigation(selectedTagLi) {
+    function scrollNav(selectedTagLi) {
         navOl.current.scrollBy({
             top: 0,
             left: selectedTagLi - 160,
@@ -28,7 +28,7 @@ function NavOfQuestion({ ticket, userAnswerFlags, indexTicket, setIndexTicket })
         if (e.target.tagName !== 'LI' || ticket[index].correctAnswer) return;
 
         const selectedTagLi = e.target.getBoundingClientRect().right;
-        scrollNavigation(selectedTagLi);
+        scrollNav(selectedTagLi);
 
         setIndexTicket(Number(index));
     }

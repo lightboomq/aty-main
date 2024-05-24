@@ -2,9 +2,7 @@ import React from 'react';
 import s from './select.module.css';
 import { useNavigate } from 'react-router-dom';
 
-
 function SelectTicket() {
-
     const navigate = useNavigate();
     const [ticketLength, setTicketLength] = React.useState([]);
 
@@ -23,7 +21,7 @@ function SelectTicket() {
             for (let i = 0; i < arrLength.ticketsCount; i++) {
                 arr.push(i);
             }
-        
+
             setTicketLength([...arr]);
         }
         getCountTickets();
@@ -34,9 +32,10 @@ function SelectTicket() {
 
         const index = e.target.getAttribute('index');
         localStorage.setItem('selectedTicket', index);
+
         const selectedTicket = localStorage.getItem('selectedTicket');
 
-        const url = selectedTicket === 'Экзамен' ? 'http://localhost:3333/exam' : `http://localhost:3333/tickets/${3}`;
+        const url = selectedTicket === 'Экзамен' ? 'http://localhost:3333/exam' : `http://localhost:3333/tickets/${selectedTicket}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -46,22 +45,21 @@ function SelectTicket() {
         });
 
         const ticketJson = await response.json();
-    
+
         localStorage.setItem('ticketJson', JSON.stringify(ticketJson));
 
         navigate('/test');
     }
-
 
     return (
         <div onClick={getTicket} className={s.wrapper}>
             <h3 className={s.headerText}>Билеты АТУ</h3>
 
             {ticketLength.map((item, i) => (
-                <li key={`${'Билет'} + ${i}`} index={`Билет № ${i + 1}`} className={s.ticket}>{`Билет ${item + 1}`}</li>
+                <li key={`${'Билет'} + ${i}`} index={i + 1} className={s.ticket}>{`Билет ${item + 1}`}</li>
             ))}
 
-            <button index='Экзамен' className={s.btnExam} type='button'>
+            <button index='Экзамен' className={s.btnЭкзамен} type='button'>
                 Сдать экзамен
             </button>
         </div>

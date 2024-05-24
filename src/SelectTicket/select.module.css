@@ -38,7 +38,7 @@
     cursor: pointer;
 }
 
-.btnExam{
+.btnЭкзамен{
     all: unset;
     display: flex;
     justify-content: center;
@@ -54,6 +54,6 @@
 .ticket:hover{
     background-color: rgb(14, 124, 226);
 }
-.btnExam:hover{
+.btnЭкзамен:hover{
     background-color: rgb(36, 201, 104);
 }
