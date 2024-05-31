@@ -6,9 +6,18 @@ import s from './question.module.css';
 
 function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, indexTicket, setIndexTicket }) {
     const user = JSON.parse(localStorage.getItem('user'));
-    const navigate = useNavigate();
     const selectedTicket = localStorage.getItem('selectedTicket');
+    const navigate = useNavigate();
 
+    React.useEffect(()=>{
+        console.log(userAnswerFlags)
+        if (!userAnswerFlags.includes(null)) { 
+            const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);
+            localStorage.setItem('readyTicket', JSON.stringify(ticket));
+            localStorage.setItem('correctAnswers', correctAnswers);
+            return navigate('/result');
+        }
+    },[userAnswerFlags,ticket,navigate])
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const selectedTicket = localStorage.getItem('selectedTicket');
@@ -41,9 +50,14 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
 
         const copyTicket = JSON.parse(JSON.stringify(ticket));
 
-        setTicket(addPropertyToTicket(copyTicket, indexAnswer, json));
+        
 
         takeStepAfterAnswering(indexTicket);
+
+        setTicket(addPropertyToTicket(copyTicket, indexAnswer, json));
+
+        
+        
     }
 
     function addPropertyToTicket(copyTicket, indexAnswer, json) {
@@ -57,19 +71,11 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
         return copyTicket;
     }
 
+
     function takeStepAfterAnswering(indexTicket) {
-
-        if (!userAnswerFlags.includes(null) && userAnswerFlags.length === ticket.length) { //Проверка ответов на все вопросы 
-            const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);
-            localStorage.setItem('readyTicket', JSON.stringify(ticket));
-            localStorage.setItem('correctAnswers', correctAnswers);
-            return navigate('/result');
-        }
-
         let step = indexTicket;
-
         step++;
-        while (userAnswerFlags[step] !== null) {
+        while (userAnswerFlags[step] !== null && userAnswerFlags.includes(null)) {
             if (step === ticket.length) {
                 step = 0;
             } else {
@@ -85,6 +91,7 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
             left: navLi.getBoundingClientRect().right - 160,
             behavior: 'smooth',
         });
+
         return setIndexTicket(step);
     }
 
