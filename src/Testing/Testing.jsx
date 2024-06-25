@@ -30,7 +30,7 @@ function Testing() {
         getTicketFromLocaleStorage();
     }, []);
 
-    
+    console.log(userAnswerFlags)
     React.useEffect(() => {
         if (!userAnswerFlags.includes(null) && ticket.length > 2) {  
             const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);

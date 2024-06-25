@@ -34,12 +34,15 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
 
         const json = await response.json();
         const copyTicket = JSON.parse(JSON.stringify(ticket));
-        userAnswerFlags.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-       
-        takeStepAfterAnswering(indexTicket);
+
+        const copyUserAnswerFlags = userAnswerFlags;
+        copyUserAnswerFlags.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
+
         setIndexTicket(indexAnswer + 1);
-        setUserAnswerFlags([...userAnswerFlags]);
+        setUserAnswerFlags([...copyUserAnswerFlags]);
         setTicket(addPropertyToTicket(copyTicket, indexAnswer, json));
+
+        takeStepAfterAnswering(indexTicket);
     }
 
     function addPropertyToTicket(copyTicket, indexAnswer, json) {
