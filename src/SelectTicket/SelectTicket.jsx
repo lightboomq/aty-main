@@ -45,7 +45,9 @@ function SelectTicket() {
         });
 
         const ticketJson = await response.json();
-
+        for (let i = 0; i < ticketJson.length; i++) {
+            ticketJson[i].questionNumber = i + 1;
+        }
         localStorage.setItem('ticketJson', JSON.stringify(ticketJson));
 
         navigate('/test');

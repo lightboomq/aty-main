@@ -45,7 +45,7 @@ function UserResultTest({ theme, setTheme }) {
                         return (
                             <div className={s.wrapperTicket} key={`${obj.question} ${i}`}>
                                 <div className={`${s.wrapperT} ${s[ModeStorage.theme]}`}>
-                                    <h3>Вопрос: {i + 1}</h3>
+                                    <h3>Вопрос: {obj.questionNumber}</h3>
 
                                     <div className={s.divWrapperImg}>
                                         {obj.img ? (

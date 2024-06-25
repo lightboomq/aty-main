@@ -7,17 +7,7 @@ import s from './question.module.css';
 function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, indexTicket, setIndexTicket }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const selectedTicket = localStorage.getItem('selectedTicket');
-    const navigate = useNavigate();
 
-    React.useEffect(()=>{
-        console.log(userAnswerFlags)
-        if (!userAnswerFlags.includes(null)) { 
-            const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);
-            localStorage.setItem('readyTicket', JSON.stringify(ticket));
-            localStorage.setItem('correctAnswers', correctAnswers);
-            return navigate('/result');
-        }
-    },[userAnswerFlags,ticket,navigate])
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const selectedTicket = localStorage.getItem('selectedTicket');
@@ -43,21 +33,13 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
         });
 
         const json = await response.json();
-
-        userAnswerFlags.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-        setUserAnswerFlags([...userAnswerFlags]);
-        setIndexTicket(indexAnswer + 1);
-
         const copyTicket = JSON.parse(JSON.stringify(ticket));
-
-        
-
+        userAnswerFlags.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
+       
         takeStepAfterAnswering(indexTicket);
-
+        setIndexTicket(indexAnswer + 1);
+        setUserAnswerFlags([...userAnswerFlags]);
         setTicket(addPropertyToTicket(copyTicket, indexAnswer, json));
-
-        
-        
     }
 
     function addPropertyToTicket(copyTicket, indexAnswer, json) {
@@ -70,7 +52,6 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
 
         return copyTicket;
     }
-
 
     function takeStepAfterAnswering(indexTicket) {
         let step = indexTicket;

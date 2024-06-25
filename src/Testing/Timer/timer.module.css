@@ -1,0 +1,22 @@
+.wrapper{
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+.timer{
+    transition-property: color;
+    transition-duration: 0.3s;
+    margin-top: 7px ;
+}
+.systemMode{
+    color:black;
+}
+.darkMode{
+    color:#cdcdcd;
+}
+.test{
+    width: 100px;
+    height: 100px;
+    background-color: aqua;
+    border-radius: 50%;
+}
