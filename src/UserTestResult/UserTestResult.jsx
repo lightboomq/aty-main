@@ -8,11 +8,24 @@ import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
 
 function UserResultTest({ theme, setTheme }) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    React.useEffect(() => { 
+        async function setExam() {
+            await fetch('http://147.45.159.11/api/exam/getResult', { //запрос на снятия экзамена 
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            });
+        }
+        setExam();
+    }, [user.token]);
+
     const ticket = JSON.parse(localStorage.getItem('readyTicket'));
-    const selectedTicket = localStorage.getItem('selectedTicket');
+    const ticketNumber = localStorage.getItem('ticketNumber');
     const correctAnswers = Number(localStorage.getItem('correctAnswers'));
-    const userPassed = `${selectedTicket} сдан`;
-    const userDidNotPass = `${selectedTicket} не сдан`;
+    const timer = localStorage.getItem('timer');
+
     const [inputValue, setInputValue] = React.useState('');
 
     const ticketsFound = ticket.filter(byQuestion => {
@@ -27,15 +40,14 @@ function UserResultTest({ theme, setTheme }) {
                 <div className={s.divWrapperInfo}>
                     {correctAnswers < ticket.length - 2 ? (
                         <h2 className={s.didNotPass}>
-                            {selectedTicket === 'Экзамен' ? `${userDidNotPass}` : `Билет №  ${userDidNotPass}`}
+                            {ticketNumber === 'Экзамен' ? 'Экзамен не сдан' : `Билет № ${ticketNumber} не сдан`}
                         </h2>
                     ) : (
-                        <h2 className={s.passed}>{selectedTicket === 'Экзамен' ? `${userPassed}` : `Билет №  ${userPassed}`}</h2>
+                        <h2 className={s.passed}>{ticketNumber === 'Экзамен' ? 'Экзамен сдан' : `Билет № ${ticketNumber} сдан`}</h2>
                     )}
 
                     <h3 className={s.info}>{`Правильных ответов ${correctAnswers} из ${ticket.length}`}</h3>
-                    <p className={s.info}>Оставшееся время тестирования 20:00</p>
-                    <h3 className={s.info}>Результат тестирование АТУ </h3>
+                    <p className={s.info}>Оставшееся время тестирования {timer}</p>
                 </div>
 
                 <Input inputValue={inputValue} setInputValue={setInputValue} ticketsFound={ticketsFound} />

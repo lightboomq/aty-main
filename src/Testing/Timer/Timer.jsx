@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../../assets/timer.svg';
 import s from './timer.module.css';
 import ModeStorage from '../../store/ModeStorage.js';
-function Timer({ ticket, userAnswerFlags }) {
+function Timer({ ticket, userAnswers }) {
     const [time, setTime] = React.useState(1200);
     const [minutes, setMinutes] = React.useState('20');
     const [seconds, setSeconds] = React.useState('00');
+
+    localStorage.setItem('timer', `${minutes}:${seconds}`);
 
     const navigate = useNavigate();
     React.useEffect(() => {
@@ -17,7 +19,7 @@ function Timer({ ticket, userAnswerFlags }) {
         }
         function updateCounter() {
             if (time === 0) {
-                const correctAnswers = userAnswerFlags.reduce((sum, num) => sum + num, 0);
+                const correctAnswers = userAnswers.reduce((sum, num) => sum + num, 0);
                 localStorage.setItem('readyTicket', JSON.stringify(ticket));
                 localStorage.setItem('correctAnswers', correctAnswers);
                 return navigate('/result');
@@ -25,7 +27,7 @@ function Timer({ ticket, userAnswerFlags }) {
             counter();
         }
         setTimeout(updateCounter, 1000);
-    }, [time, navigate, ticket, userAnswerFlags]);
+    }, [time, navigate, ticket, userAnswers]);
 
     return (
         <div className={s.wrapper}>

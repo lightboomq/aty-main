@@ -7,7 +7,7 @@ function ResultAnswers({ el }) {
                 {el.answerText}
                 <span className={s.highlightStantardGreen}>
                     &nbsp;(Эталон)
-                    <span className={s.highlightUserResponseRed}> (Ваш ответ)</span>
+                    <span className={s.highlightUserResponseRed}>(Ваш ответ)</span>
                 </span>
             </span>
         );
@@ -17,7 +17,7 @@ function ResultAnswers({ el }) {
         return (
             <span>
                 {el.answerText}
-                <span className={s.highlightUserResponseRed}> (Ваш ответ)</span>
+                <span className={s.highlightUserResponseRed}>(Ваш ответ)</span>
             </span>
         );
     }
@@ -26,7 +26,7 @@ function ResultAnswers({ el }) {
         return (
             <span>
                 {el.answerText}
-                <span className={s.highlightStantardGreen}> (Эталон)</span>
+                <span className={s.highlightStantardGreen}>(Эталон)</span>
             </span>
         );
     }

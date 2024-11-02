@@ -1,24 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import ModeStorage from '../../store/ModeStorage.js';
 import s from './question.module.css';
 
-function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, indexTicket, setIndexTicket }) {
+function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket }) {
+    const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
-    const selectedTicket = localStorage.getItem('selectedTicket');
+
+    const ticketNumber = localStorage.getItem('ticketNumber');
 
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
-        const selectedTicket = localStorage.getItem('selectedTicket');
-
-        const ticketNumber = Number(ticket[indexTicket].ticketNumber);
-
-        const indexAnswer = Number(e.target.getAttribute('index'));
-        const idAnswer = e.target.getAttribute('id');
-
-        const url =
-            selectedTicket === 'Экзамен' ? `http://localhost:3333/exam/${ticketNumber}` : `http://localhost:3333/tickets/${selectedTicket}`;
+        const id = e.target.getAttribute('answerid');
+        const ticketId = ticket[indexTicket].ticketId;
+        const url = ticketNumber === 'Экзамен' ? 'http://147.45.159.11/api/exam' : 'http://147.45.159.11/api/tickets';
 
         const response = await fetch(url, {
             method: 'POST',
@@ -27,31 +22,33 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
                 Authorization: `Bearer ${user.token}`,
             },
             body: JSON.stringify({
-                answerId: idAnswer,
-                questionNumber: indexTicket + 1,
+                ticketId: ticketId,
+                questionId: questionId,
+                answerId: id,
             }),
         });
 
         const json = await response.json();
         const copyTicket = JSON.parse(JSON.stringify(ticket));
+        const copyuserAnswers = userAnswers;
 
-        const copyUserAnswerFlags = userAnswerFlags;
-        copyUserAnswerFlags.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
+        copyuserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
 
-        setIndexTicket(indexAnswer + 1);
-        setUserAnswerFlags([...copyUserAnswerFlags]);
-        setTicket(addPropertyToTicket(copyTicket, indexAnswer, json));
+        setTicket(addPropertyToTicket(copyTicket, id, json));
+        setUserAnswers([...copyuserAnswers]);
+        setIndexTicket(indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1);
 
         takeStepAfterAnswering(indexTicket);
     }
 
-    function addPropertyToTicket(copyTicket, indexAnswer, json) {
-        copyTicket[indexTicket].answers[indexAnswer].userResponse = json.isCorrect;
-        copyTicket[indexTicket].correctAnswer = json.correctAnswer;
+    function addPropertyToTicket(copyTicket, id, json) {
+        const answers = copyTicket[indexTicket].answers;
+        const indexSelectedAnswer = answers.findIndex(el => el.answerId === id);
+        const indexCorrectAnswer = answers.findIndex(el => el.answerId === json.correctAnswer);
+
+        answers[indexSelectedAnswer].userResponse = json.isCorrect;
+        answers[indexCorrectAnswer].correctAnswer = true;
         copyTicket[indexTicket].help = json.help;
-        const idCurrentQuestion = copyTicket[indexTicket].correctAnswer;
-        const answerFoundIndex = copyTicket[indexTicket].answers.findIndex(el => el.id === idCurrentQuestion);
-        copyTicket[indexTicket].answers[answerFoundIndex].correctAnswer = true;
 
         return copyTicket;
     }
@@ -59,7 +56,7 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
     function takeStepAfterAnswering(indexTicket) {
         let step = indexTicket;
         step++;
-        while (userAnswerFlags[step] !== null && userAnswerFlags.includes(null)) {
+        while (userAnswers[step] !== null && userAnswers.includes(null)) {
             if (step === ticket.length) {
                 step = 0;
             } else {
@@ -84,7 +81,7 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
             <div className={s.divWrapperInfo}>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>Вопрос: {indexTicket + 1}</h3>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>
-                    {selectedTicket === 'Экзамен' ? selectedTicket : `Билет № ${selectedTicket}`}
+                    {ticketNumber === 'Экзамен' ? 'Экзамен' : `Билет № ${ticketNumber}`}
                 </h3>
             </div>
 
@@ -96,14 +93,14 @@ function Question({ ticket, setTicket, userAnswerFlags, setUserAnswerFlags, inde
                 )}
             </div>
 
-            <h3 className={`${s.h3QuestionTitle} ${s[ModeStorage.theme]} `}>{ticket[indexTicket].question}</h3>
+            <h3 className={`${s.h3QuestionTitle} ${s[ModeStorage.theme]} `}>{question}</h3>
 
             <ol onClick={giveAnswerOnQuestion}>
                 {ticket[indexTicket].answers.map((answer, i) => {
                     return (
-                        <div key={`${answer.answer_text} ${i}`}>
+                        <div key={answer.answerId}>
                             <div>
-                                <li id={answer.id} index={i} className={`${s.liAnswer} ${s[ModeStorage.theme]}`}>
+                                <li answerid={answer.answerId} className={`${s.liAnswer} ${s[ModeStorage.theme]}`}>
                                     {`${i + 1}. ${answer.answerText}`}
                                 </li>
                             </div>

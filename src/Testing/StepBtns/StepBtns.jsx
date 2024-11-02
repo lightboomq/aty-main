@@ -1,6 +1,6 @@
 import React from 'react';
 import s from './stepBtns.module.css';
-function StepBtns({ ticket, userAnswerFlags, indexTicket, setIndexTicket }) {
+function StepBtns({ ticket, userAnswers, indexTicket, setIndexTicket }) {
     function scrollNav(step) {
         const navOl = document.getElementById('navOl');
         const navLi = document.getElementById(step);
@@ -16,11 +16,10 @@ function StepBtns({ ticket, userAnswerFlags, indexTicket, setIndexTicket }) {
         let step = indexTicket;
 
         step++;
-        while (userAnswerFlags[step] !== null) {
+        while (userAnswers[step] !== null) {
             if (step === ticket.length) {
                 step = 0;
-            }
-            else{
+            } else {
                 step++;
             }
         }
@@ -32,7 +31,7 @@ function StepBtns({ ticket, userAnswerFlags, indexTicket, setIndexTicket }) {
         let step = indexTicket;
 
         step--;
-        while (userAnswerFlags[step] !== null) {
+        while (userAnswers[step] !== null) {
             if (step === -1) {
                 step = ticket.length - 1;
             } else {

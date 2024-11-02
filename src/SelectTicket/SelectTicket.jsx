@@ -4,38 +4,29 @@ import { useNavigate } from 'react-router-dom';
 
 function SelectTicket() {
     const navigate = useNavigate();
-    const [ticketLength, setTicketLength] = React.useState([]);
-
+    const [ticketsId, setTicketsId] = React.useState([]);
+    const user = JSON.parse(localStorage.getItem('user'));
+    
     React.useEffect(() => {
         async function getCountTickets() {
             const token = JSON.parse(localStorage.getItem('user'));
-            const response = await fetch('http://localhost:3333/tickets/count', {
+            const response = await fetch('http://147.45.159.11/api/tickets', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token.token}`,
                 },
             });
-            const arrLength = await response.json();
-
-            const arr = [];
-            for (let i = 0; i < arrLength.ticketsCount; i++) {
-                arr.push(i);
-            }
-
-            setTicketLength([...arr]);
+            const arrTicketsId = await response.json();
+            setTicketsId(arrTicketsId);
         }
         getCountTickets();
     }, []);
-
+  
     async function getTicket(e) {
         const token = JSON.parse(localStorage.getItem('user'));
-
-        const index = e.target.getAttribute('index');
-        localStorage.setItem('selectedTicket', index);
-
-        const selectedTicket = localStorage.getItem('selectedTicket');
-
-        const url = selectedTicket === 'Экзамен' ? 'http://localhost:3333/exam' : `http://localhost:3333/tickets/${selectedTicket}`;
+        const ticketNumber = e.target.getAttribute('number');
+        const ticketId = e.target.getAttribute('ticketid');
+        const url = ticketNumber === 'Экзамен' ? 'http://147.45.159.11/api/exam' : `http://147.45.159.11/api/tickets/${ticketId}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -45,11 +36,14 @@ function SelectTicket() {
         });
 
         const ticketJson = await response.json();
+
         for (let i = 0; i < ticketJson.length; i++) {
             ticketJson[i].questionNumber = i + 1;
         }
-        localStorage.setItem('ticketJson', JSON.stringify(ticketJson));
 
+        localStorage.setItem('ticketNumber', ticketNumber);
+        localStorage.setItem('ticketId', ticketId);
+        localStorage.setItem('ticketJson', JSON.stringify(ticketJson));
         navigate('/test');
     }
 
@@ -57,13 +51,15 @@ function SelectTicket() {
         <div onClick={getTicket} className={s.wrapper}>
             <h3 className={s.headerText}>Билеты АТУ</h3>
 
-            {ticketLength.map((item, i) => (
-                <li key={`${'Билет'} + ${i}`} index={i + 1} className={s.ticket}>{`Билет ${item + 1}`}</li>
-            ))}
+            {ticketsId.map((id, i) => {
+                return <li key={id} number={i + 1} ticketid={id} className={s.ticket}>{`Билет ${i + 1}`}</li>;
+            })}
 
-            <button index='Экзамен' className={s.btnЭкзамен} type='button'>
-                Сдать экзамен
-            </button>
+            {user.isAppointExam && (
+                <button number='Экзамен' className={s.btnЭкзамен} type='button'>
+                    Сдать экзамен
+                </button>
+            )}
         </div>
     );
 }

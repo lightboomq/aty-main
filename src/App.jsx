@@ -8,16 +8,12 @@ import UserTestResult from './UserTestResult/UserTestResult.jsx';
 import s from './app.module.css';
 
 function App() {
-    
-
     return (
         <div className={s.divWrapper}>
             <Routes>
                 <Route path='/' element={<Registration />} />
                 <Route path='/auth' element={<Authorization />} />
-                <Route path='/tickets' element={<SelectTicket />} />
-
-                
+                <Route path='/tickets' element={<SelectTicket />} />  
                 <Route path='/test' element={<Testing />} />
                 <Route path='/result' element={<UserTestResult/>} />
             </Routes>

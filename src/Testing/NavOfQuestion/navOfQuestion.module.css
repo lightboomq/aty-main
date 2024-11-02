@@ -1,7 +1,6 @@
 .olWrapper{
     width: 100%;
     display: flex;
-    justify-content: space-between;
     overflow-x: auto;
     margin-top: 15px;
 }
@@ -33,13 +32,16 @@
     background-color: green;
     color: white;
 }
+
+.highlightInDark{
+    background-color: #404855dc;
+    color: white;
+}
 .darkMode{
-    background-color: #070B11;
-    color:#cdcdcd;
+    background-color: #d3d3d3b9;
 }
 .systemMode{
     background-color: #D3D3D3;
-    color: black;
 }
 
 
