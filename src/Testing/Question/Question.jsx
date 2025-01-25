@@ -13,7 +13,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         if (e.target.tagName !== 'LI') return;
         const id = e.target.getAttribute('answerid');
         const ticketId = ticket[indexTicket].ticketId;
-        const url = ticketNumber === 'Экзамен' ? 'http://147.45.159.11/api/exam' : 'http://147.45.159.11/api/tickets';
+        const url = ticketNumber === 'Экзамен' ? 'http://localhost:3333/api/exam' : 'http://localhost:3333/api/tickets';
 
         const response = await fetch(url, {
             method: 'POST',

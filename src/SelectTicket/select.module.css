@@ -5,55 +5,72 @@
     font-family: 'Roboto', sans-serif;
 }
 
-
-.wrapper{
-    margin: auto;
-    max-width:500px;
-    background-color: white;
-    border-radius: 10px;
-    margin-top: 30px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
 .headerText{
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 24px;
+    max-width: 500px;
+    margin: auto;
     height: 58px;
-    background-color: #E7EAF2;
-    border-radius: 10px 0px 0px 10px;
+    border-radius: 10px 10px 0px 0px;
     font-weight: lighter;
+    margin-top: 30px;
+}
+
+.wrapper{
+    display: grid;
+    grid-template-columns: repeat(5,85px);
+    justify-content: center;
+    gap: 12px;
+    margin: auto;
+    max-width:500px;
+    border-radius: 0px 0px 10px 10px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    padding: 15px;
 }
 .ticket{
     display: flex;
     justify-content: center;
     align-items: center;
     margin: auto;
-    width: 70%;
+    width: 85px;
     border-radius: 10px;
-    color: white;
+    color: rgb(0, 0, 0);
     height: 52px;
-    background-color: #0000FE;
-    margin-top: 20px;
+    background-color: #e2e2e2;
     cursor: pointer;
 }
 
-.btnЭкзамен{
+.btnExam{
     all: unset;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    margin: auto;
+    width: 100% !important;
+    max-width: 500px !important;
     height: 52px;
     background-color:  #17b85a;
     border-radius: 10px;
     cursor: pointer;
     font-weight: 400;
-    margin-top: 20px;
+    margin-top: 5px;
 }
 .ticket:hover{
     background-color: rgb(14, 124, 226);
 }
-.btnЭкзамен:hover{
+.btnExam:hover{
     background-color: rgb(36, 201, 104);
+}
+
+@media (max-width: 600px){
+    .wrapper{
+        grid-template-columns: repeat(4,85px);
+    }
+}
+@media (max-width: 400px){
+    .wrapper{
+        grid-template-columns: repeat(3,85px);
+    }
 }

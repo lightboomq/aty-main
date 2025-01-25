@@ -29,7 +29,7 @@ function Registration() {
     async function sendForm() {
         if (nameErr || surNameErr || mailErr || passwordErr || passwordRepeatErr) return;
 
-        await fetch('http://147.45.159.11/api/auth/register', {
+        await fetch('http://localhost:3333/api/auth/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

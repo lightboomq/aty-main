@@ -11,7 +11,7 @@ function UserResultTest({ theme, setTheme }) {
     const user = JSON.parse(localStorage.getItem('user'));
     React.useEffect(() => { 
         async function setExam() {
-            await fetch('http://147.45.159.11/api/exam/getResult', { //запрос на снятия экзамена 
+            await fetch('http://localhost:3333/api/exam/getResult', { //запрос на снятия экзамена 
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${user.token}`,

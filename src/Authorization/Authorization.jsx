@@ -4,14 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 
 function Authorization() {
     localStorage.clear();
-    const [mail, setMail] = React.useState('sidorov@gmail.com');
-    const [password, setPassword] = React.useState('200922');
+    const [mail, setMail] = React.useState('belikov@gmail.com');
+    const [password, setPassword] = React.useState('228belikov');
    
     const navigate = useNavigate();
 
     
     async function login() {
-        const url = 'http://147.45.159.11/api/auth/login';
+        const url = 'http://localhost:3333/api/auth/login';
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -32,6 +32,14 @@ function Authorization() {
     return (
         <form className={s.wrapper}>
             <h3 className={s.regText}>Вход</h3>
+            <h3>belikov@gmail.com</h3>
+            <h3>228belikov</h3><br />
+
+            <h3>sorokin@gmail.com</h3>
+            <h3>228sorokin</h3><br />
+
+            <h3>lebedev@gmail.com</h3>
+            <h3>228lebedev</h3>
 
             <label className={s.wrapperInput}>
                 Почта:

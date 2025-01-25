@@ -8,12 +8,14 @@ import s from './testing.module.css';
 import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
+
 function Testing() {
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([]);
     const navigate = useNavigate();
 
+    
     React.useEffect(() => {
         function getTicketFromLocaleStorage() {
             const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));

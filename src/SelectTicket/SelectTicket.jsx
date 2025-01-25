@@ -10,7 +10,7 @@ function SelectTicket() {
     React.useEffect(() => {
         async function getCountTickets() {
             const token = JSON.parse(localStorage.getItem('user'));
-            const response = await fetch('http://147.45.159.11/api/tickets', {
+            const response = await fetch('http://localhost:3333/api/tickets', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${token.token}`,
@@ -23,10 +23,11 @@ function SelectTicket() {
     }, []);
   
     async function getTicket(e) {
+        
         const token = JSON.parse(localStorage.getItem('user'));
         const ticketNumber = e.target.getAttribute('number');
         const ticketId = e.target.getAttribute('ticketid');
-        const url = ticketNumber === 'Экзамен' ? 'http://147.45.159.11/api/exam' : `http://147.45.159.11/api/tickets/${ticketId}`;
+        const url = ticketNumber === 'Экзамен' ? 'http://localhost:3333/api/exam' : `http://localhost:3333/api/tickets/${ticketId}`;
 
         const response = await fetch(url, {
             method: 'GET',
@@ -48,19 +49,23 @@ function SelectTicket() {
     }
 
     return (
-        <div onClick={getTicket} className={s.wrapper}>
+        <>
             <h3 className={s.headerText}>Билеты АТУ</h3>
 
-            {ticketsId.map((id, i) => {
-                return <li key={id} number={i + 1} ticketid={id} className={s.ticket}>{`Билет ${i + 1}`}</li>;
-            })}
+
+            <div onClick={getTicket} className={s.wrapper}>
+                {ticketsId.map((id, i) => {
+                    return <li key={id} number={i + 1} ticketid={id} className={s.ticket}>{`Билет ${i + 1}`}</li>;
+                })}
+            </div>
 
             {user.isAppointExam && (
-                <button number='Экзамен' className={s.btnЭкзамен} type='button'>
+                <button onClick={getTicket} number='Экзамен' className={s.btnExam} type='button'>
                     Сдать экзамен
                 </button>
             )}
-        </div>
+        </>
+        
     );
 }
 
