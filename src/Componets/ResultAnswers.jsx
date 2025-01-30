@@ -1,5 +1,5 @@
 import React from 'react';
-import s from './resultAnswer.module.css';
+import s from '../StyleComponets/resultAnswer.module.css';
 function ResultAnswers({ el }) {
     if (el.userResponse && el.correctAnswer) {
         return (

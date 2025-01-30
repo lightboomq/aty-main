@@ -1,19 +1,19 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import ModeStorage from '../../store/ModeStorage.js';
-import s from './question.module.css';
+import ModeStorage from '../store/ModeStorage.js';
+import s from '../StyleComponets/question.module.css';
 
-function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket }) {
+function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket}) {
+    
     const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
-
-    const ticketNumber = localStorage.getItem('ticketNumber');
-
+    const typeTest = localStorage.getItem('typeTest');
+    const url = typeTest === 'Экзамен' ? 'http://localhost:3333/api/exam' : 'http://localhost:3333/api/tickets';
+ 
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const id = e.target.getAttribute('answerid');
         const ticketId = ticket[indexTicket].ticketId;
-        const url = ticketNumber === 'Экзамен' ? 'http://localhost:3333/api/exam' : 'http://localhost:3333/api/tickets';
 
         const response = await fetch(url, {
             method: 'POST',
@@ -30,12 +30,11 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
 
         const json = await response.json();
         const copyTicket = JSON.parse(JSON.stringify(ticket));
-        const copyuserAnswers = userAnswers;
-
-        copyuserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-
+        const copyUserAnswers = userAnswers;
+        copyUserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
+        
         setTicket(addPropertyToTicket(copyTicket, id, json));
-        setUserAnswers([...copyuserAnswers]);
+        setUserAnswers([...copyUserAnswers]);
         setIndexTicket(indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1);
 
         takeStepAfterAnswering(indexTicket);
@@ -81,7 +80,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
             <div className={s.divWrapperInfo}>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>Вопрос: {indexTicket + 1}</h3>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>
-                    {ticketNumber === 'Экзамен' ? 'Экзамен' : `Билет № ${ticketNumber}`}
+                    {typeTest === 'Экзамен' ? 'Экзамен' : `Билет № ${typeTest}`}
                 </h3>
             </div>
 

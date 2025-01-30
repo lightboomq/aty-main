@@ -26,16 +26,18 @@
     align-items: center;
     height: 40px;
 }
+.wrapperDiv{
+    margin-top: 10px;
+    padding: 0px 50px 0px 50px; 
+}
 .wrapperInput{
     display: flex;
     align-items: center;
     padding: 12px 0 12px 0;
-    width: 70%;
     border: 1px solid rgb(138, 137, 137);
     margin: auto;
     padding-left: 5px;
     border-radius: 10px;
-    margin-top: 10px;
     cursor: text;
 }
 .select{
@@ -73,8 +75,15 @@ input::placeholder{
     color: blue;
     font-size: 14px;
 }
-.highlightingInputErr{
+.highlightingInput{
     border: 1px solid red;
+}
+.highlightingTextErr{
+    display: block;
+    color: red;
+    font-weight: lighter;
+    font-size: 14px;
+    margin-left: 5px;
 }
 
      

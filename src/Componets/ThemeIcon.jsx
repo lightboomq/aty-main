@@ -1,8 +1,8 @@
 import React from 'react';
-import themeIcon from '../../assets/themeModeIcon.png';
-import ModeStorage from '../../store/ModeStorage';
+import themeIcon from '../assets/themeModeIcon.png';
+import ModeStorage from '../store/ModeStorage';
 import { observer } from 'mobx-react-lite';
-import s from './themeIcon.module.css';
+import s from '../StyleComponets/themeIcon.module.css';
 
 function ThemeIcon() {
     const [rotateImg, setRotateImg] = React.useState(-180);

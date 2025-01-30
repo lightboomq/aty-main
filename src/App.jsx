@@ -1,10 +1,10 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Registration from './Registration/Registration.jsx';
-import Authorization from './Authorization/Authorization.jsx';
-import SelectTicket from './SelectTicket/SelectTicket.jsx';
-import Testing from './Testing/Testing.jsx';
-import UserTestResult from './UserTestResult/UserTestResult.jsx';
+import Registration from './Componets/Registration.jsx';
+import Authorization from './Componets/Authorization.jsx';
+import SelectTicket from './Componets/SelectTicket.jsx';
+import Testing from './Componets/Testing.jsx';
+import UserTestResult from './Componets/UserTestResult.jsx';
 import s from './app.module.css';
 
 function App() {

@@ -1,5 +1,5 @@
 import React from 'react';
-import s from './userIcon.module.css'
+import s from '../StyleComponets/userIcon.module.css'
 
 function UserIcon() {
     const [randomColor, setRandomColor] = React.useState('');

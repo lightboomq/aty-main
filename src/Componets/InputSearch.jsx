@@ -1,10 +1,9 @@
 import React from 'react';
-import imgСrossInput from '../../assets/crossInput.svg';
-import imgSearchLoop from '../../assets/searchLoop.svg';
-import ModeStorage from '../../store/ModeStorage.js';
-// import { observer } from 'mobx-react-lite';
+import imgСrossInput from '../assets/crossInput.svg';
+import imgSearchLoop from '../assets/searchLoop.svg';
+import ModeStorage from '../store/ModeStorage.js';
 import { Link } from 'react-router-dom';
-import s from './input.module.css';
+import s from '../StyleComponets/inputSearch.module.css';
 
 function Input({ inputValue, setInputValue, ticketsFound }) {
     function test() {
@@ -25,14 +24,11 @@ function Input({ inputValue, setInputValue, ticketsFound }) {
                     {inputValue ? (
                         <img onClick={() => setInputValue('')} className={s.imgCrossSearchInput} src={imgСrossInput} alt='cross' />
                     ) : null}
-
-                    
                 </div>
-                
+
                 <Link onClick={test} className={`${s.link} ${s[ModeStorage.theme]}`} to='/'>
                     Завершить просмотр
                 </Link>
-                
             </div>
             {inputValue ? <span className={s.spanInputFoundText}>Найдено: {ticketsFound.length}</span> : ''}
         </>

@@ -1,5 +1,5 @@
 
-import s from './resultNotFound.module.css';
+import s from '../StyleComponets/resultNotFound.module.css';
 function ResultNotFound() {
     return (
         <div className={s.wrapper}>

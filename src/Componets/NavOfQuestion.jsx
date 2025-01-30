@@ -1,23 +1,20 @@
 import React from 'react';
-import s from './navOfQuestion.module.css';
-import ModeStorage from '../../store/ModeStorage.js';
+import s from '../StyleComponets/navOfQuestion.module.css';
+import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
 function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
-    const ticketNumber = localStorage.getItem('ticketNumber');
+    const typeTest = localStorage.getItem('typeTest');
 
     function highlight(i) {
-        if (userAnswers[i]) return `${s.questionByNav} ${s.highlightInGreen}`;
-
-        if (userAnswers[i] === 0) return `${s.questionByNav} ${s.highlightInRed}`;
-
         if (i === indexTicket) return `${s.questionByNav} ${s.highlightInBlue}`;
+        if (userAnswers[i]) return `${s.questionByNav} ${s.highlightInGreen}`;
+        if (userAnswers[i] === 0) return `${s.questionByNav} ${s.highlightInRed}`;
 
         return `${s.questionByNav} ${s[ModeStorage.theme]}`;
     }
 
     function highlightExam(i) {
         if (typeof userAnswers[i] === 'number') return `${s.questionByNav} ${s.highlightInDark}`;
-
         if (i === indexTicket) return `${s.questionByNav} ${s.highlightInBlue}`;
 
         return `${s.questionByNav} ${s[ModeStorage.theme]}`;
@@ -47,7 +44,7 @@ function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
         <ol id={'navOl'} ref={navOl} onClick={getQuestionByNav} className={s.olWrapper}>
             {ticket.map((obj, i) => {
                 return (
-                    <li key={`${obj.answers}${i}`} id={i} className={ticketNumber === 'Экзамен' ? highlightExam(i) : highlight(i)}>
+                    <li key={`${obj.answers}${i}`} id={i} className={typeTest === 'Экзамен' ? highlightExam(i) : highlight(i)}>
                         {i + 1}
                     </li>
                 );

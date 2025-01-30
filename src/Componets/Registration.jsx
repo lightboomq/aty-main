@@ -1,0 +1,116 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import InputFieldReg from './InputFieldReg.jsx';
+import s from '../StyleComponets/registration.module.css';
+
+function Registration() {
+    React.useEffect(() => {
+        localStorage.clear();
+    }, []);
+
+    const [select, setSelect] = React.useState({ value: '', isCorrect: false, err: 'Выберите колонну' });
+
+    const [formData, setFormData] = React.useState([
+        { value: '', text: 'Имя:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isCorrect: false },
+        { value: '', text: 'Фамилия:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isCorrect: false },
+        {
+            value: '',
+            text: 'Почта:',
+            type: 'email',
+            regexp: '^[A-Za-z0-9._%+-]+@[a-z0-9-]+\\.[a-z]{2,4}$',
+            err: 'Проверьте правильность введённого адреса электронной почты',
+            isCorrect: false,
+        },
+        {
+            value: '',
+            text: 'Пароль:',
+            type: 'password',
+            regexp: '^[^а-яА-Я ]{5,15}$',
+            err: 'Любые символы, кроме Кириллицы. Длина пароля от 5 до 15 символов',
+            isCorrect: false,
+        },
+    ]);
+
+    const navigate = useNavigate();
+    async function sendForm() {
+        for (let i = 0; i < formData.length; i++) {
+            if (formData[i].isCorrect || formData[i].value === '' || select.isCorrect) return;
+        } 
+        try {
+            const response = await fetch('http://localhost:3333/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                                
+                    firstName: formData[0].value[0].toUpperCase() + formData[0].value.slice(1).toLowerCase(),
+                    secondName: formData[1].value[0].toUpperCase() + formData[1].value.slice(1).toLowerCase(),
+                    email: formData[2].value,
+                    password: formData[3].value,
+                    department: select.value,
+                }),
+            });
+
+            if (response.ok) {
+                return navigate('/auth');
+            }
+            throw new Error('Ошибка при регистрации, попробуйте снова.');
+        } catch (err) {
+            console.log(err.message);
+        }
+    }
+    return (
+        <form className={s.wrapper}>
+            <h3 className={s.regText}>Регистрация</h3>
+
+            <div className={s.wrapperDiv}>
+                <label className={`${s.wrapperInput} ${s.highlightingInputErr}`}>
+                    Колонна:
+                    <select
+                        onChange={e => {
+                            setSelect(prev => ({ ...prev, value: e.target.value, isCorrect: e.target.value === '' }));
+                        }}
+                        className={s.select}
+                    >
+                        <option value=''>Не выбрано</option>
+                        <option value='1'>1</option>
+                        <option value='2'>2</option>
+                        <option value='3'>3</option>
+                        <option value='4'>4</option>
+                        <option value='5'>5</option>
+                    </select>
+                </label>
+                <span className={s.highlightingTextErr}>{select.isCorrect && select.err}</span>
+            </div>
+
+            {formData.map((obj, i) => {
+                return (
+                    <InputFieldReg
+                        key={obj.text}
+                        value={obj.value}
+                        i={i}
+                        text={obj.text}
+                        type={obj.type}
+                        regexp={obj.regexp}
+                        err={obj.err}
+                        isCorrect={obj.isCorrect}
+                        setFormData={setFormData}
+                    />
+                );
+            })}
+
+            <button onClick={sendForm} className={s.btnReg} type='button'>
+                Зарегистрироваться
+            </button>
+
+            <div className={s.wrapperLink}>
+                <Link to='/auth' className={s.linkAuth}>
+                    Войти в аккаунт
+                </Link>
+            </div>
+        </form>
+    );
+}
+
+export default Registration;

@@ -1,14 +1,12 @@
 import React from 'react';
-import s from './authorization.module.css';
+import s from '../StyleComponets/authorization.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Authorization() {
     localStorage.clear();
-    const [mail, setMail] = React.useState('belikov@gmail.com');
-    const [password, setPassword] = React.useState('228belikov');
-   
+    const [mail, setMail] = React.useState('');
+    const [password, setPassword] = React.useState('');
     const navigate = useNavigate();
-
     
     async function login() {
         const url = 'http://localhost:3333/api/auth/login';
@@ -32,9 +30,7 @@ function Authorization() {
     return (
         <form className={s.wrapper}>
             <h3 className={s.regText}>Вход</h3>
-            <h3>belikov@gmail.com</h3>
-            <h3>228belikov</h3><br />
-
+            
             <h3>sorokin@gmail.com</h3>
             <h3>228sorokin</h3><br />
 

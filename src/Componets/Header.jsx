@@ -1,7 +1,7 @@
-import UserIcon from './UserIcon/UserIcon.jsx';
-import ThemeIcon from './ThemeIcon/ThemeIcon.jsx';
+import UserIcon from './UserIcon.jsx';
+import ThemeIcon from './ThemeIcon.jsx';
 import logo from '../assets/logoHeader.svg';
-import s from './header.module.css';
+import s from '../StyleComponets/header.module.css';
 function Header() {
     return (
         <header className={s.headerWrapper}>

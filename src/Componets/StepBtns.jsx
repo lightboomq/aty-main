@@ -1,5 +1,5 @@
 import React from 'react';
-import s from './stepBtns.module.css';
+import s from '../StyleComponets/stepBtns.module.css';
 function StepBtns({ ticket, userAnswers, indexTicket, setIndexTicket }) {
     function scrollNav(step) {
         const navOl = document.getElementById('navOl');

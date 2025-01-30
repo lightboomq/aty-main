@@ -1,14 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from '../../assets/timer.svg';
-import s from './timer.module.css';
-import ModeStorage from '../../store/ModeStorage.js';
-function Timer({ ticket, userAnswers }) {
+import logo from '../assets/timer.svg';
+import s from '../StyleComponets/timer.module.css';
+import ModeStorage from '../store/ModeStorage.js';
+function Timer({ ticket, userAnswers}) {
     const [time, setTime] = React.useState(1200);
     const [minutes, setMinutes] = React.useState('20');
     const [seconds, setSeconds] = React.useState('00');
-
-    localStorage.setItem('timer', `${minutes}:${seconds}`);
+    
 
     const navigate = useNavigate();
     React.useEffect(() => {
