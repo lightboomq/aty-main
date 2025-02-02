@@ -5,6 +5,7 @@ import Authorization from './Componets/Authorization.jsx';
 import SelectTicket from './Componets/SelectTicket.jsx';
 import Testing from './Componets/Testing.jsx';
 import UserTestResult from './Componets/UserTestResult.jsx';
+import {observer} from 'mobx-react-lite';
 import s from './app.module.css';
 
 function App() {
@@ -17,8 +18,9 @@ function App() {
                 <Route path='/test' element={<Testing />} />
                 <Route path='/result' element={<UserTestResult/>} />
             </Routes>
+
         </div>
     );
 }
 
-export default App;
+export default observer(App);

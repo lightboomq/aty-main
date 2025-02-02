@@ -8,7 +8,7 @@ function Timer({ ticket, userAnswers}) {
     const [minutes, setMinutes] = React.useState('20');
     const [seconds, setSeconds] = React.useState('00');
     
-
+    localStorage.setItem('timer',`${minutes}:${seconds}`)
     const navigate = useNavigate();
     React.useEffect(() => {
         function counter() {

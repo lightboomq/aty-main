@@ -8,23 +8,33 @@ import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
 
 function UserResultTest({ theme, setTheme }) {
-    const user = JSON.parse(localStorage.getItem('user'));
+    // const user = JSON.parse(localStorage.getItem('user')); Этот код под вопросом
+    // let url = '';
+    // if (typeTest === 'Экзамен') {
+    //     url = 'http://localhost:3333/api/exam/getResult';
+    // } else {
+    //     url = 'http://localhost:3333/api/exam/getTrainingResult';
+    // }
 
-    React.useEffect(() => {
-        async function setExam() {
-            await fetch('http://localhost:3333/api/exam/getResult', {
-                //запрос на снятия экзамена
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            });
-        }
-        setExam();
-    }, [user.token]);
+    // React.useEffect(() => {
+    //     async function setExam() {
+    //         const res = await fetch(url, {
 
-    const ticket = JSON.parse(localStorage.getItem('readyTicket'));
+    //             method: 'GET',
+    //             headers: {
+    //                 Authorization: `Bearer ${user.token}`,
+    //             },
+    //         });
+    //         const date = await res.json();
+    //         console.log(date);
+    //     }
+
+    //     setExam();
+    // }, [user.token, url]);
+
     const typeTest = localStorage.getItem('typeTest');
+    const ticket = JSON.parse(localStorage.getItem('readyTicket'));
+
     const correctAnswers = Number(localStorage.getItem('correctAnswers'));
     const timer = localStorage.getItem('timer');
 
@@ -41,9 +51,17 @@ function UserResultTest({ theme, setTheme }) {
 
                 <div className={s.divWrapperInfo}>
                     {correctAnswers < ticket.length - 2 ? (
-                        <h2 className={s.didNotPass}>{typeTest === 'Экзамен' ? 'Экзамен не сдан' : `Билет № ${typeTest} не сдан`}</h2>
+                        <h2 className={s.didNotPass}>
+                            {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
+                                ? `${typeTest} не сдан`
+                                : `Билет № ${typeTest} не сдан`}
+                        </h2>
                     ) : (
-                        <h2 className={s.passed}>{typeTest === 'Экзамен' ? 'Экзамен сдан' : `Билет № ${typeTest} сдан`}</h2>
+                        <h2 className={s.passed}>
+                            {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
+                                ? `${typeTest} сдан`
+                                : `Билет № ${typeTest} сдан`}
+                        </h2>
                     )}
 
                     <h3 className={s.info}>{`Правильных ответов ${correctAnswers} из ${ticket.length}`}</h3>

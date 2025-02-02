@@ -23,13 +23,14 @@ function SelectTicket() {
     }, []);
 
     async function getTicket(e) {
-        if(e.target.tagName !== 'LI' && e.target.tagName !== 'BUTTON') return;
+        if (e.target.tagName !== 'LI' && e.target.tagName !== 'BUTTON') return;
 
         const token = JSON.parse(localStorage.getItem('user'));
-        const typeTest = e.target.getAttribute('number');
+        const typeTest = e.target.getAttribute('type-test');
         const ticketId = e.target.getAttribute('ticketid');
-        const url = typeTest === 'Экзамен' ? 'http://localhost:3333/api/exam' : `http://localhost:3333/api/tickets/${ticketId}`;
-
+        const url = typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? 'http://localhost:3333/api/exam' : `http://localhost:3333/api/tickets/${ticketId}`;
+        
+        
         setIsLoader(true);
         const response = await fetch(url, {
             method: 'GET',
@@ -53,15 +54,19 @@ function SelectTicket() {
         <div onClick={getTicket} className={s.wrapper}>
             <h3 className={s.headerText}>Билеты АТУ</h3>
 
-            {ticketsId.map((id, i) => {
-                return <li key={id} number={i + 1} ticketid={id} className={s.ticket}>{`Билет ${i + 1}`}</li>;
-            })}
-
-            {user.isAppointExam && (
-                <button number='Экзамен' className={s.btnExam} type='button'>
+            {user.isAppointExam ? (
+                <button type-test='Экзамен' className={s.btnExam} type='button'>
                     Сдать экзамен
                 </button>
+            ) : (
+                <button type-test='Тренировочный экзамен' className={s.btnExam} type='button'>
+                    Тренировочный экзамен
+                </button>
             )}
+
+            {ticketsId.map((id, i) => {
+                return <li key={id} type-test={i + 1} ticketid={id} className={s.ticket}>{`Билет ${i + 1}`}</li>;
+            })}
         </div>
     );
 }

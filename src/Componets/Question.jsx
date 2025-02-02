@@ -3,13 +3,20 @@ import { observer } from 'mobx-react-lite';
 import ModeStorage from '../store/ModeStorage.js';
 import s from '../StyleComponets/question.module.css';
 
-function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket}) {
-    
+function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket }) {
     const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
+
     const typeTest = localStorage.getItem('typeTest');
-    const url = typeTest === 'Экзамен' ? 'http://localhost:3333/api/exam' : 'http://localhost:3333/api/tickets';
- 
+    let url = '';
+    if (typeTest === 'Экзамен') {
+        url = 'http://localhost:3333/api/exam';
+    } else if (typeTest === 'Тренировочный экзамен') {
+        url = 'http://localhost:3333/api/exam/training';
+    } else {
+        url = 'http://localhost:3333/api/tickets';
+    }
+
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const id = e.target.getAttribute('answerid');
@@ -32,7 +39,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         const copyTicket = JSON.parse(JSON.stringify(ticket));
         const copyUserAnswers = userAnswers;
         copyUserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-        
+
         setTicket(addPropertyToTicket(copyTicket, id, json));
         setUserAnswers([...copyUserAnswers]);
         setIndexTicket(indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1);
@@ -80,7 +87,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
             <div className={s.divWrapperInfo}>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>Вопрос: {indexTicket + 1}</h3>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>
-                    {typeTest === 'Экзамен' ? 'Экзамен' : `Билет № ${typeTest}`}
+                    {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? typeTest : `Билет № ${typeTest}`}
                 </h3>
             </div>
 

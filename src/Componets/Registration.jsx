@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import InputFieldReg from './InputFieldReg.jsx';
+import Errors from '../store/Errors';
+import {observer} from 'mobx-react-lite';
 import s from '../StyleComponets/registration.module.css';
 
 function Registration() {
@@ -8,18 +10,19 @@ function Registration() {
         localStorage.clear();
     }, []);
 
-    const [select, setSelect] = React.useState({ value: '', isCorrect: false, err: 'Выберите колонну' });
+    
+    const [select, setSelect] = React.useState({ value: '', isNotCorrect: false, err: 'Выберите колонну' });
 
     const [formData, setFormData] = React.useState([
-        { value: '', text: 'Имя:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isCorrect: false },
-        { value: '', text: 'Фамилия:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isCorrect: false },
+        { value: '', text: 'Имя:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotCorrect: false },
+        { value: '', text: 'Фамилия:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotCorrect: false },
         {
             value: '',
             text: 'Почта:',
             type: 'email',
             regexp: '^[A-Za-z0-9._%+-]+@[a-z0-9-]+\\.[a-z]{2,4}$',
             err: 'Проверьте правильность введённого адреса электронной почты',
-            isCorrect: false,
+            isNotCorrect: false,
         },
         {
             value: '',
@@ -27,23 +30,23 @@ function Registration() {
             type: 'password',
             regexp: '^[^а-яА-Я ]{5,15}$',
             err: 'Любые символы, кроме Кириллицы. Длина пароля от 5 до 15 символов',
-            isCorrect: false,
+            isNotCorrect: false,
         },
     ]);
 
     const navigate = useNavigate();
     async function sendForm() {
+        
         for (let i = 0; i < formData.length; i++) {
-            if (formData[i].isCorrect || formData[i].value === '' || select.isCorrect) return;
-        } 
+            if (formData[i].isNotCorrect || formData[i].value === '' || select.isNotCorrect || select.value === '') return;
+        }
         try {
-            const response = await fetch('http://localhost:3333/api/auth/register', {
+            const res = await fetch('http://localhost:3333/api/auth/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                                
                     firstName: formData[0].value[0].toUpperCase() + formData[0].value.slice(1).toLowerCase(),
                     secondName: formData[1].value[0].toUpperCase() + formData[1].value.slice(1).toLowerCase(),
                     email: formData[2].value,
@@ -52,12 +55,14 @@ function Registration() {
                 }),
             });
 
-            if (response.ok) {
+            if (res.ok) {
                 return navigate('/auth');
             }
-            throw new Error('Ошибка при регистрации, попробуйте снова.');
+            const err = await res.json();
+            
+            throw new Error(err.message);
         } catch (err) {
-            console.log(err.message);
+            Errors.setMessage(err.message);
         }
     }
     return (
@@ -69,7 +74,7 @@ function Registration() {
                     Колонна:
                     <select
                         onChange={e => {
-                            setSelect(prev => ({ ...prev, value: e.target.value, isCorrect: e.target.value === '' }));
+                            setSelect(prev => ({ ...prev, value: e.target.value, isNotCorrect: e.target.value === '' }));
                         }}
                         className={s.select}
                     >
@@ -81,7 +86,7 @@ function Registration() {
                         <option value='5'>5</option>
                     </select>
                 </label>
-                <span className={s.highlightingTextErr}>{select.isCorrect && select.err}</span>
+                <span className={s.highlightingTextErr}>{select.isNotCorrect && select.err}</span>
             </div>
 
             {formData.map((obj, i) => {
@@ -94,12 +99,15 @@ function Registration() {
                         type={obj.type}
                         regexp={obj.regexp}
                         err={obj.err}
-                        isCorrect={obj.isCorrect}
+                        isNotCorrect={obj.isNotCorrect}
                         setFormData={setFormData}
                     />
                 );
             })}
-
+            <div className={s.wrapperDiv}>
+                <span className={s.highlightingTextErr}>{Errors.getMessage()}</span>
+            </div>
+            
             <button onClick={sendForm} className={s.btnReg} type='button'>
                 Зарегистрироваться
             </button>
@@ -113,4 +121,4 @@ function Registration() {
     );
 }
 
-export default Registration;
+export default observer(Registration);

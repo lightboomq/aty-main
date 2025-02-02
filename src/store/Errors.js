@@ -2,7 +2,7 @@ import { makeAutoObservable } from 'mobx';
 
 class Errors{
     constructor(){
-        this.message = '';
+        this.message = ''
         makeAutoObservable(this, {}, { autoBind: true });
     }
     getMessage(){
