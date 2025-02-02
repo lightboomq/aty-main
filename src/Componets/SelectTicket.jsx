@@ -1,12 +1,15 @@
 import React from 'react';
+import Loader from './Loader.jsx';
 import s from '../StyleComponets/select.module.css';
 import { useNavigate } from 'react-router-dom';
 
 function SelectTicket() {
-    const navigate = useNavigate();
-    const [ticketsId, setTicketsId] = React.useState([]);
     const user = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
+
+    const [ticketsId, setTicketsId] = React.useState([]);
     const [isLoader, setIsLoader] = React.useState(false);
+    
     React.useEffect(() => {
         async function getCountTickets() {
             const token = JSON.parse(localStorage.getItem('user'));
@@ -28,9 +31,11 @@ function SelectTicket() {
         const token = JSON.parse(localStorage.getItem('user'));
         const typeTest = e.target.getAttribute('type-test');
         const ticketId = e.target.getAttribute('ticketid');
-        const url = typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? 'http://localhost:3333/api/exam' : `http://localhost:3333/api/tickets/${ticketId}`;
-        
-        
+        const url =
+            typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
+                ? 'http://localhost:3333/api/exam'
+                : `http://localhost:3333/api/tickets/${ticketId}`;
+
         setIsLoader(true);
         const response = await fetch(url, {
             method: 'GET',
@@ -56,16 +61,20 @@ function SelectTicket() {
 
             {user.isAppointExam ? (
                 <button type-test='Экзамен' className={s.btnExam} type='button'>
-                    Сдать экзамен
+                    {isLoader && <Loader color='orange' />}Сдать экзамен
                 </button>
             ) : (
                 <button type-test='Тренировочный экзамен' className={s.btnExam} type='button'>
-                    Тренировочный экзамен
+                    {isLoader && <Loader color='orange' />} Тренировочный экзамен
                 </button>
             )}
 
             {ticketsId.map((id, i) => {
-                return <li key={id} type-test={i + 1} ticketid={id} className={s.ticket}>{`Билет ${i + 1}`}</li>;
+                return (
+                    <li key={id} type-test={i + 1} ticketid={id} className={s.ticket}>
+                        {`Билет ${i + 1}`}{' '}
+                    </li>
+                );
             })}
         </div>
     );

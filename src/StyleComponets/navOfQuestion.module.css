@@ -1,6 +1,6 @@
 .olWrapper{
-    width: 100%;
     display: flex;
+    justify-content: space-between;
     overflow-x: auto;
     margin-top: 15px;
 }
@@ -17,6 +17,7 @@
     transition-property: background-color;
     transition-duration: 0.3s;
 }
+
 .questionByNav:first-child{
     margin-left: 0px;
 }

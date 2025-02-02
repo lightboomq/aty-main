@@ -1,7 +1,6 @@
 .wrapper{
     display: flex;
     align-items: center;
-    margin-top: 20px;
 }
 .timer{
     transition-property: color;
@@ -13,10 +12,4 @@
 }
 .darkMode{
     color:#cdcdcd;
-}
-.test{
-    width: 100px;
-    height: 100px;
-    background-color: aqua;
-    border-radius: 50%;
 }

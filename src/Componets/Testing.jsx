@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header.jsx';
 import NavOfQuestion from './NavOfQuestion.jsx';
+import GoBack from './GoBack.jsx';
 import Timer from './Timer.jsx';
 import Question from './Question.jsx';
 import StepBtns from './StepBtns.jsx';
@@ -10,6 +11,7 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 
 function Testing() {
+    const typeTest = localStorage.getItem('typeTest');
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
@@ -23,7 +25,7 @@ function Testing() {
         setUserAnswers,
         setIndexTicket,
     };
-    
+
     React.useEffect(() => {
         function getTicketFromLocaleStorage() {
             const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));
@@ -37,8 +39,6 @@ function Testing() {
         getTicketFromLocaleStorage();
     }, []);
 
- 
-
     React.useEffect(() => {
         if (!userAnswers.includes(null) && ticket.length > 2) {
             const correctAnswers = userAnswers.reduce((accum, num) => accum + num, 0);
@@ -49,13 +49,18 @@ function Testing() {
     }, [userAnswers, ticket, navigate]);
 
     return (
+        
         <div className={`${s.divWrapper} ${s[ModeStorage.theme]}`}>
             <div className={`${s.divWrapperContent} ${s[ModeStorage.theme]}`}>
                 <Header />
-                <NavOfQuestion {...states}/>
-                <Timer {...states}/>
-                <Question {...states}/>
-                <StepBtns {...states}/>
+                <NavOfQuestion {...states} />
+                <div className={s.test}>
+                    {typeTest !== 'Экзамен' && <GoBack />}
+                    <Timer {...states} />
+                </div>
+
+                <Question {...states} />
+                <StepBtns {...states} />
             </div>
         </div>
     );

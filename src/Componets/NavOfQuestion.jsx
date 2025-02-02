@@ -2,6 +2,7 @@ import React from 'react';
 import s from '../StyleComponets/navOfQuestion.module.css';
 import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
+
 function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
     const typeTest = localStorage.getItem('typeTest');
 
@@ -31,20 +32,24 @@ function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
     }
 
     function getQuestionByNav(e) {
-        const index = e.target.id;
-        if (e.target.tagName !== 'LI' || ticket[index].correctAnswer) return;
+        const index = Number(e.target.id);
+        if (e.target.tagName !== 'LI' || userAnswers[index] !== null) return;
 
         const selectedTagLi = e.target.getBoundingClientRect().right;
         scrollNav(selectedTagLi);
 
-        setIndexTicket(Number(index));
+        setIndexTicket(index);
     }
 
     return (
         <ol id={'navOl'} ref={navOl} onClick={getQuestionByNav} className={s.olWrapper}>
             {ticket.map((obj, i) => {
                 return (
-                    <li key={`${obj.answers}${i}`} id={i} className={typeTest === 'Экзамен' ? highlightExam(i) : highlight(i)}>
+                    <li
+                        key={`${obj.answers}${i}`}
+                        id={i}
+                        className={typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? highlightExam(i) : highlight(i)}
+                    >
                         {i + 1}
                     </li>
                 );

@@ -2,13 +2,16 @@ import React from 'react';
 import imgСrossInput from '../assets/crossInput.svg';
 import imgSearchLoop from '../assets/searchLoop.svg';
 import ModeStorage from '../store/ModeStorage.js';
-import { Link } from 'react-router-dom';
+import ModalWindow from './ModalWindow.jsx';
+
 import s from '../StyleComponets/inputSearch.module.css';
 
 function Input({ inputValue, setInputValue, ticketsFound }) {
     function test() {
         ModeStorage.setFlagTheme();
+        setIsOpenModal(true)
     }
+    const [isOpenModal,setIsOpenModal] = React.useState(false);
     return (
         <>
             <div className={s.divWrapper}>
@@ -26,9 +29,10 @@ function Input({ inputValue, setInputValue, ticketsFound }) {
                     ) : null}
                 </div>
 
-                <Link onClick={test} className={`${s.link} ${s[ModeStorage.theme]}`} to='/'>
+                <button  onClick={test} type='button' className={`${s.goBackBtn} ${s[ModeStorage.theme]}`} >
                     Завершить просмотр
-                </Link>
+                </button>
+                {isOpenModal && <ModalWindow path='/tickets' setIsOpenModal={setIsOpenModal} text='Завершить просмотр и вернуться к билетам?'/>}
             </div>
             {inputValue ? <span className={s.spanInputFoundText}>Найдено: {ticketsFound.length}</span> : ''}
         </>

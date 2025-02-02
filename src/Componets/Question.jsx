@@ -17,6 +17,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         url = 'http://localhost:3333/api/tickets';
     }
 
+
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;
         const id = e.target.getAttribute('answerid');
