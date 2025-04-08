@@ -1,0 +1,39 @@
+.wrapper{
+    display: flex;
+    flex-direction: column;
+}
+.wrapperComment{
+    display: flex;
+    height: 50px;
+    background-color: #158bec;
+}
+.author{
+    width: 50px;
+    height: 50px;
+    background-color: aqua;
+}
+.userName{
+    color: rgb(182, 178, 178);
+    font-size: 14px;
+}
+textarea{
+    width: 50%;
+    height: 120px;
+    resize: none;
+    padding: 5px;
+    font-size: 14px;
+}
+.btnSendComment{
+    all: unset;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    width: 192px;
+    height: 40px;
+    background-color: #158bec;
+    margin-top: 10px;
+}

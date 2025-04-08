@@ -3,7 +3,10 @@ import s from '../StyleComponets/authorization.module.css';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Authorization() {
-    localStorage.clear();
+    React.useEffect(()=>{
+        localStorage.clear();
+    },[])
+    
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const navigate = useNavigate();

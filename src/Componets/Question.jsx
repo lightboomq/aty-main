@@ -16,7 +16,66 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
     } else {
         url = 'http://localhost:3333/api/tickets';
     }
+    const User = JSON.parse(localStorage.getItem('user'));
 
+    //Установка соеденения с сервером
+    // const socket = io('http://localhost:3333/api/comments', {
+    //     query: {
+    //         token: User.token,
+    //     },
+    // });
+
+    // socket.on('connect', () => {
+    //     console.log('Успешно подключен к серверу');
+    // });
+
+    // socket.on('connect_error', error => {
+    //     console.error('Ошибка подключения:', error.message);
+    // });
+
+
+    // // Отправка комментария на сервер
+    // socket.emit(
+    //     'send_comment',
+    //     {
+    //         ticketId: ticket[indexTicket].ticketId,
+    //         questionId: ticket[indexTicket].questionId,
+    //         text: 'выпывп',
+    //         firstName: 'Иван',
+    //         secondName: 'Иванов',
+    //     },
+    //     response => {
+    //         if (response.error) {
+    //             console.error('Ошибка отправки комментария:', response.message);
+    //         } else {
+    //             console.log('Комментарий успешно отправлен:', response);
+    //         }
+    //     },
+    // );
+
+    // socket.on('connect', () => {
+    //     console.log('Успешно подключен к серверу');
+
+    //     // Отправка запроса на получение комментариев
+
+    //     socket.emit('get_all_comments', {
+    //         ticketId: ticket[indexTicket].ticketId,
+    //         questionId: ticket[indexTicket].questionId,
+    //     });
+    // });
+
+    // // Получение комментариев от сервера
+    // socket.on('get_all_comments', comments => {
+    //     console.log('Получены все комментарии:', comments);
+    // });
+
+    // socket.on('error', errorMessage => {
+    //     console.error('Ошибка:', errorMessage.message);
+    // });
+
+    // socket.on('connect_error', error => {
+    //     console.error('Ошибка подключения:', error.message);
+    // });
 
     async function giveAnswerOnQuestion(e) {
         if (e.target.tagName !== 'LI') return;

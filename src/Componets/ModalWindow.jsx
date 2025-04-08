@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ModalWindow({ path, setIsOpenModal, text }) {
     const navigate = useNavigate();
-
+    
     return (
         <div className={s.wrapperModalWindow}>
             <div className={s.modalWindow}>

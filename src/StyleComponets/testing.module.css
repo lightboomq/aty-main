@@ -21,7 +21,15 @@
     transition-property:background-color;
     transition-duration: 0.5s;
 }
-
+.wrapperComments{
+    display: flex;
+    margin-top: 20px;
+    cursor: pointer;
+}
+.countComments{
+    color: #1A76CB;
+    margin-left: 10px;
+}
 .divWrapperContent.darkMode{
     background-color: #17212B;
 }

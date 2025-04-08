@@ -1,21 +1,24 @@
 import React from 'react';
 import themeIcon from '../assets/themeModeIcon.png';
 import ModeStorage from '../store/ModeStorage';
-import { observer } from 'mobx-react-lite';
 import s from '../StyleComponets/themeIcon.module.css';
 
 function ThemeIcon() {
-    const [rotateImg, setRotateImg] = React.useState(-180);
-    const img = React.useRef(0);
-
+    const [rotateValue, setRotateValue] = React.useState(0); //Добавить глобальное состояние на rotateValue путем mobx (P.S не корректно работает , сбрасывает состояние на новый роут)
+    
     function getTheme() {
         ModeStorage.setFlagTheme();
-        ModeStorage.flagTheme ? ModeStorage.setDarkMode() : ModeStorage.setSystemMode();
 
-        img.current.style.transform = `rotate(${rotateImg}deg)`;
-        setRotateImg(rotateImg - 180);
+        if (ModeStorage.flagTheme) {
+            ModeStorage.setDarkMode();
+            setRotateValue(-180);
+        } else {
+            ModeStorage.setSystemMode();
+            setRotateValue(0);
+        }
     }
-    return <img ref={img} onClick={getTheme} className={s.imgThemeIcon} src={themeIcon} alt='theme' />;
+    
+    return <img onClick={getTheme} className={s.imgThemeIcon} src={themeIcon} alt='theme' style={{ transform: `rotate(${rotateValue}deg)` }}/>;
 }
 
-export default observer(ThemeIcon);
+export default ThemeIcon;

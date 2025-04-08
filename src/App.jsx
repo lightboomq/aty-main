@@ -4,6 +4,7 @@ import Registration from './Componets/Registration.jsx';
 import Authorization from './Componets/Authorization.jsx';
 import SelectTicket from './Componets/SelectTicket.jsx';
 import Testing from './Componets/Testing.jsx';
+import Comments from './Componets/Comments.jsx'
 import UserTestResult from './Componets/UserTestResult.jsx';
 import {observer} from 'mobx-react-lite';
 import s from './app.module.css';
@@ -16,6 +17,7 @@ function App() {
                 <Route path='/auth' element={<Authorization />} />
                 <Route path='/tickets' element={<SelectTicket />} />  
                 <Route path='/test' element={<Testing />} />
+                <Route path='/comments' element={<Comments />} />
                 <Route path='/result' element={<UserTestResult/>} />
             </Routes>
 

@@ -5,25 +5,37 @@
     font-family: 'Roboto', sans-serif;
 }
 
-.headerText{
-    text-align: center;
-    font-size: 24px;
-    font-weight: lighter;
-    grid-column: 1/-1;
-}
 
 .wrapper{
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+.wrapperTickets{
     display: grid;
     grid-template-columns: repeat(5,85px);
     justify-content: center;
     gap: 12px;
-    margin: auto;
     max-width:500px;
     border-radius: 10px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     padding: 15px;
-    margin-top: 15px;
 }
+.wrapperHeader{
+    grid-column: 1/-1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.testt{
+    display: flex;
+}
+.iconHeader{
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+}
+
 .ticket{
     display: flex;
     justify-content: center;
@@ -57,19 +69,32 @@
     background-color: rgb(36, 201, 104);
 }
 
-@media (max-width: 600px){
-    .wrapper{
+
+.wrapperMyMistakes{
+    background-color: #F5F5F5;
+    width: 240px;
+    height: 95px;
+    border-radius: 10px;
+    padding: 17px;
+    margin-left: 15px;
+}
+.linkMistake{
+    color: #1a76cb;
+    text-decoration: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
+.linkMistake:hover{
+    color: red;
+}
+
+@media (max-width: 530px){
+    .wrapperTickets{
         grid-template-columns: repeat(4,85px);
-    }
-    .headerText .btnExam{
-        grid-column: 1/-1;
     }
 }
 @media (max-width: 400px){
-    .wrapper{
+    .wrapperTickets{
         grid-template-columns: repeat(3,85px);
-    }
-    .headerText .btnExam{
-        grid-column: 1/-1;
     }
 }
