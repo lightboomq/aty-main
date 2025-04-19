@@ -10,21 +10,19 @@ import Comments from './Comments.jsx';
 import iconComments from '../assets/comments.svg';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { io, Socket } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import s from '../StyleComponets/testing.module.css';
-import style from '../StyleComponets/comments.module.css';//
+import style from '../StyleComponets/comments.module.css'; //
 function Testing() {
+
     const typeTest = localStorage.getItem('typeTest');
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '', questionId: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
-    const [allComments, setAllComments] = React.useState(0);
+    const [allComments, setAllComments] = React.useState([]);
     const [isOpenComments, setIsOpenComments] = React.useState(true);
-    
-    // const user = JSON.parse(localStorage.getItem('user'));
-    // const ticketId = localStorage.getItem('ticketId');
-    // const [userComment, setUserComment] = React.useState('');
 
+    console.log(allComments)
     const navigate = useNavigate();
 
     const states = {
@@ -59,39 +57,32 @@ function Testing() {
             },
         });
         webSocket.current.on('connect', () => {
-            // console.log('server is connect');
+            console.log('server is connect');
         });
     }, []);
 
-
-
-   
     React.useEffect(() => {
         const handleComments = comments => {
+            console.log('1');
             setAllComments(comments);
+        };
+        const handleNewComment = comment => {
+            setAllComments(prev => [...prev, comment]);
         };
 
         webSocket.current.on('get_all_comments', handleComments);
+        webSocket.current.on('send_comment', handleNewComment);
+
         webSocket.current.emit('get_all_comments', {
             ticketId: ticket[indexTicket].ticketId,
             questionId: ticket[indexTicket].questionId,
         });
 
-       
         return () => {
-            if (webSocket.current) {
-                webSocket.current.off('get_all_comments', handleComments);
-            }
+            webSocket.current.off('get_all_comments', handleComments);
+            webSocket.current.off('send_comment', handleNewComment);
         };
     }, [ticket, indexTicket]);
-
-    // function sendComment() {
-    //     webSocket.current.emit('send_comment', {
-    //         ticketId: ticketId,
-    //         questionId: ticket[indexTicket].questionId,
-    //         text: userComment,
-    //     });   
-    // }
 
     React.useEffect(() => {
         if (!userAnswers.includes(null) && ticket.length > 2) {
@@ -101,8 +92,6 @@ function Testing() {
             return navigate('/result');
         }
     }, [userAnswers, ticket, navigate]);
-
-    
 
     return (
         <div className={`${s.divWrapper} ${s[ModeStorage.theme]}`}>
@@ -131,21 +120,6 @@ function Testing() {
                         setAllComments={setAllComments}
                     />
                 )}
-
-                    
-                {/* <div className={style.wrapper}>
-                    <span className={style.userName}>
-                        Ваше имя: {user.firstName} {user.secondName}
-                    </span>
-                    <textarea
-                        value={userComment}
-                        onChange={e => setUserComment(e.target.value)}
-                        placeholder='Введите текст комментария...'
-                    />
-                    <button onClick={sendComment} className={style.btnSendComment} type='button'>
-                        Добавить комментарий
-                    </button>
-                </div> */}
             </div>
         </div>
     );
