@@ -3,16 +3,33 @@ import s from '../StyleComponets/comments.module.css';
 import like from '../assets/likeComment.svg';
 import disLike from '../assets/disLikeComment.svg';
 import iconComments from '../assets/comments.svg';
-function Comments({ webSocket, ticket, indexTicket }) {
+import { io } from 'socket.io-client';
+
+function Comments({ ticket, indexTicket }) {
     const user = JSON.parse(localStorage.getItem('user'));
+    const userIdFromLocalStorage = user.userId;
     const ticketId = localStorage.getItem('ticketId');
     const [allComments, setAllComments] = React.useState([]);
     const [userComment, setUserComment] = React.useState('');
     const [isOpenComments, setIsOpenComments] = React.useState(false);
 
+    const webSocket = React.useRef(null);
+    //дописать логику с сокетами
+    React.useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        webSocket.current = io('ws://localhost:3333/api/comments', {
+            query: {
+                token: user.token,
+            },
+        });
+        webSocket.current.on('connect', () => {
+            console.log('connected');
+        });
+    }, []);
+
     React.useEffect(() => {
         if (ticket[indexTicket].ticketId === undefined) return;
-
+        
         const handleComments = comments => setAllComments(comments);
         const handleNewComment = comment => setAllComments(prev => [...prev, comment]);
         const handleError = err => console.error('WebSocket error:', err);
@@ -26,8 +43,8 @@ function Comments({ webSocket, ticket, indexTicket }) {
         webSocket.current.on('send_comment', handleNewComment);
 
         webSocket.current.emit('join_room', {
-            ticketId: ticket.ticketId,
-            questionId: ticket.questionId,
+            ticketId: ticket[indexTicket].ticketId,
+            questionId: ticket[indexTicket].questionId,
         });
 
         return () => {
@@ -37,7 +54,7 @@ function Comments({ webSocket, ticket, indexTicket }) {
                 webSocket.current.off('error', handleError);
             }
         };
-    }, [ticket, indexTicket, webSocket]);
+    }, [ticket, indexTicket]);
 
     const sendComment = () => {
         webSocket.current.emit('send_comment', {
@@ -52,9 +69,10 @@ function Comments({ webSocket, ticket, indexTicket }) {
         });
     };
 
-    const deleteComment = e => {
-        const commentId = e.target.getAttribute('comment-id');
-        const i = Number(e.target.getAttribute('comment-index'));
+    const deleteComment = (userId, commentId, i) => {
+        if (userId !== userIdFromLocalStorage) return;
+        const res = confirm('Удалить комментарий?');
+        if (!res) return;
 
         webSocket.current.emit('delete_comment', {
             commentId: commentId,
@@ -62,9 +80,7 @@ function Comments({ webSocket, ticket, indexTicket }) {
 
         setAllComments(allComments.filter((_, index) => index !== i));
     };
-   
-    
-console.log(allComments)
+
     return (
         <div className={s.wrapper}>
             <div className={s.wrapperComments} onClick={() => setIsOpenComments(!isOpenComments)}>
@@ -72,7 +88,7 @@ console.log(allComments)
                 <p className={s.countComments}>Комментарив: {allComments.length}</p>
             </div>
 
-            {isOpenComments && 
+            {isOpenComments && (
                 <>
                     {allComments.map((user, i) => {
                         const dateStr = user.time;
@@ -85,9 +101,8 @@ console.log(allComments)
 
                         return (
                             <div key={user.commentId} className={s.wrapperComment}>
-                                <span onClick={deleteComment} comment-id={user.commentId} comment-index={i}>
-                                    X
-                                </span>
+                                <span onClick={() => deleteComment(user.userId, user.commentId, i)}>{user.userId === userIdFromLocalStorage? 'Удалить': ''}</span>
+
                                 <div className={s.wrapperAuthor}>
                                     <div>
                                         <h5>{`${user.firstName} ${user.secondName}`}</h5>
@@ -133,7 +148,7 @@ console.log(allComments)
                         Добавить комментарий
                     </button>
                 </>
-            }
+            )}
         </div>
     );
 }
