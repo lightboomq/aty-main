@@ -17,7 +17,7 @@ function Testing() {
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '', questionId: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
-    
+
     const navigate = useNavigate();
 
     const states = {
@@ -27,7 +27,6 @@ function Testing() {
         setTicket,
         setUserAnswers,
         setIndexTicket,
-        
     };
 
     React.useEffect(() => {
@@ -43,18 +42,6 @@ function Testing() {
         }
         getTicketFromLocaleStorage();
     }, []);
-
-    // React.useEffect(() => {
-    //     const user = JSON.parse(localStorage.getItem('user'));
-    //     webSocket.current = io('ws://localhost:3333/api/comments', {
-    //         query: {
-    //             token: user.token,
-    //         },
-    //     });
-    //     webSocket.current.on('connect', () => {
-    //         // console.log('connected');
-    //     });
-    // }, []);
 
     React.useEffect(() => {
         if (!userAnswers.includes(null) && ticket.length > 2) {
@@ -78,7 +65,7 @@ function Testing() {
                 <Question {...states} />
                 <StepBtns {...states} />
 
-                 <Comments {...states} />
+                <Comments {...states} />
             </div>
         </div>
     );

@@ -14,7 +14,7 @@ function Comments({ ticket, indexTicket }) {
     const [isOpenComments, setIsOpenComments] = React.useState(false);
 
     const webSocket = React.useRef(null);
-    //дописать логику с сокетами
+    //дописать логику на закрытие соединения на флан isOpenComments
     React.useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
         webSocket.current = io('ws://localhost:3333/api/comments', {
@@ -29,7 +29,7 @@ function Comments({ ticket, indexTicket }) {
 
     React.useEffect(() => {
         if (ticket[indexTicket].ticketId === undefined) return;
-        
+
         const handleComments = comments => setAllComments(comments);
         const handleNewComment = comment => setAllComments(prev => [...prev, comment]);
         const handleError = err => console.error('WebSocket error:', err);
@@ -81,6 +81,17 @@ function Comments({ ticket, indexTicket }) {
         setAllComments(allComments.filter((_, index) => index !== i));
     };
 
+    const setDateUserComment = dateStr => {
+        const date = new Date(dateStr);
+        const dayOfMonth = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
+        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hour = date.getHours();
+        const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+
+        return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`;
+    };
+
     return (
         <div className={s.wrapper}>
             <div className={s.wrapperComments} onClick={() => setIsOpenComments(!isOpenComments)}>
@@ -91,22 +102,16 @@ function Comments({ ticket, indexTicket }) {
             {isOpenComments && (
                 <>
                     {allComments.map((user, i) => {
-                        const dateStr = user.time;
-                        const date = new Date(dateStr);
-                        const dayOfMonth = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
-                        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-                        const year = date.getFullYear();
-                        const hour = date.getHours();
-                        const minutes = date.getMinutes();
-
                         return (
                             <div key={user.commentId} className={s.wrapperComment}>
-                                <span onClick={() => deleteComment(user.userId, user.commentId, i)}>{user.userId === userIdFromLocalStorage? 'Удалить': ''}</span>
+                                <span onClick={() => deleteComment(user.userId, user.commentId, i)}>
+                                    {user.userId === userIdFromLocalStorage ? 'Удалить' : ''}
+                                </span>
 
                                 <div className={s.wrapperAuthor}>
                                     <div>
                                         <h5>{`${user.firstName} ${user.secondName}`}</h5>
-                                        <p className={s.time}>{`${dayOfMonth}.${month}.${year} ${hour}:${minutes}`}</p>
+                                        <p className={s.time}>{setDateUserComment(user.time)}</p>
                                     </div>
                                 </div>
 
