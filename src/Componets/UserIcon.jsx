@@ -2,7 +2,6 @@ import React from 'react';
 import s from '../StyleComponets/userIcon.module.css';
 
 function UserIcon() {
-    const [isShow, setIsShow] = React.useState(false);
     const [randomColor, setRandomColor] = React.useState('');
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -15,23 +14,9 @@ function UserIcon() {
         generateRandomColor();
     }, []);
 
-    function show() {
-        console.log(true);
-    }
-    function hidden() {
-        console.log(false);
-    }
     return (
-        <div
-            onMouseOver={show}
-            onMouseOut={hidden}
-            onFocus={show}
-            onBlur={hidden}
-            style={{ backgroundColor: randomColor }}
-            className={s.divWrapper}
-        >
+        <div style={{ backgroundColor: randomColor }} className={s.divWrapper}>
             {`${user.firstName[0]}${user.secondName[0]}`}
-            
         </div>
     );
 }
