@@ -9,8 +9,7 @@ import ModeStorage from '../store/ModeStorage.js';
 import Comments from './Comments.jsx';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
-import { io } from 'socket.io-client';
-import s from '../StyleComponets/testing.module.css';
+import s from '../StyleComponets/test.module.css';
 
 function Testing() {
     const typeTest = localStorage.getItem('typeTest');
@@ -30,27 +29,25 @@ function Testing() {
     };
 
     React.useEffect(() => {
-        function getTicketFromLocaleStorage() {
-            const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));
-            const fillNull = [];
-            setTicket(localeStorageTicket);
-
-            for (let i = 0; i < localeStorageTicket.length; i++) {
-                fillNull.push(null);
-            }
-            setUserAnswers(fillNull);
+        const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));
+        const arr = [];
+    
+        for (let i = 0; i < localeStorageTicket.length; i++) {
+            arr.push(null);
         }
-        getTicketFromLocaleStorage();
+
+        setTicket(localeStorageTicket);// основной массив вопросов, из выбраного билета или экзамен
+        setUserAnswers(arr); //второстепенный массив для записи  0 или 1 после ответа на вопрос + опора при навигаций по вопросам
     }, []);
 
     React.useEffect(() => {
-        if (!userAnswers.includes(null) && ticket.length > 2) {
+        if (!userAnswers.includes(null) && ticket.length > 2) { //Переход на результат тестирования после ответа на все вопросы
             const correctAnswers = userAnswers.reduce((accum, num) => accum + num, 0);
             localStorage.setItem('readyTicket', JSON.stringify(ticket));
             localStorage.setItem('correctAnswers', correctAnswers);
-            return navigate('/result');
+            return navigate('/result'); 
         }
-    }, [userAnswers, ticket, navigate]);
+    }, [userAnswers, ticket, navigate]); 
 
     return (
         <div className={`${s.divWrapper} ${s[ModeStorage.theme]}`}>
@@ -65,7 +62,7 @@ function Testing() {
                 <Question {...states} />
                 <StepBtns {...states} />
 
-                <Comments {...states} />
+                {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? '' : <Comments {...states} />}
             </div>
         </div>
     );

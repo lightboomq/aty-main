@@ -1,12 +1,13 @@
 
-.headerWrapper{
+.wrapper{
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
    
 }
-.divIconWrapper{
+
+.wrapperIcons{
     display: flex;
     width: 95px;
     justify-content: space-between;

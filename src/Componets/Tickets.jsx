@@ -7,11 +7,11 @@ import logoSadSmile from '../assets/sadSmile.svg';
 import logoFavorite from '../assets/favorite.svg';
 import Errors from '../store/Errors.js';
 import { observer } from 'mobx-react-lite';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow.jsx';
-import s from '../StyleComponets/selectTicket.module.css';
+import s from '../StyleComponets/tickets.module.css';
 
-function SelectTicket() {
+function Tickets() {
     const user = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate();
 
@@ -65,6 +65,7 @@ function SelectTicket() {
 
         const token = JSON.parse(localStorage.getItem('user'));
         const typeTest = e.target.getAttribute('type-test');
+        console.log(typeTest)
         const ticketId = e.target.getAttribute('ticketid');
         const url =
             typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
@@ -85,6 +86,7 @@ function SelectTicket() {
         }
 
         localStorage.setItem('typeTest', typeTest);
+        // localStorage.setItem('numberTicket',)
         localStorage.setItem('ticketId', ticketId);
         localStorage.setItem('ticketJson', JSON.stringify(ticketJson));
         navigate('/test');
@@ -92,14 +94,14 @@ function SelectTicket() {
 
     return (
         <div className={s.wrapper}>
-            {isOpenModal && <ModalWindow path='/auth' setIsOpenModal={setIsOpenModal} text='Выйти из учетной записи' />}
+            {isOpenModal && <ModalWindow path='/auth' setIsOpenModal={setIsOpenModal} text='Выйти из учетной записи?' />}
 
             <div onClick={getTicket} className={s.wrapperTickets}>
                 <div className={s.wrapperHeader}>
                     <h3>Билеты АТУ</h3>
-                    <div className={s.testt}>
+                    <div className={s.wrapperIcons}>
                         <UserIcon />
-                        <img onClick={() => setIsOpenModal(true)} className={s.iconHeader} src={logoutIcon} alt='logout' />
+                        <img onClick={() => setIsOpenModal(true)} className={s.iconHeader} src={logoutIcon} alt='logout' title='Выход' />
                     </div>
                 </div>
 
@@ -115,7 +117,7 @@ function SelectTicket() {
 
                 {ticketsId.map((id, i) => {
                     return (
-                        <li key={id} type-test={i + 1} ticketid={id} className={s.ticket}>
+                        <li key={id} type-test={`Билет № ${i + 1}`} ticketid={id} className={s.ticket}>
                             Билет {i + 1}
                         </li>
                     );
@@ -152,4 +154,4 @@ function SelectTicket() {
     );
 }
 
-export default observer(SelectTicket);
+export default observer(Tickets);

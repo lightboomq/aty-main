@@ -18,7 +18,7 @@ function ThemeIcon() {
         }
     }
     
-    return <img onClick={getTheme} className={s.imgThemeIcon} src={themeIcon} alt='theme' style={{ transform: `rotate(${rotateValue}deg)` }}/>;
+    return <img onClick={getTheme} className={s.imgThemeIcon} src={themeIcon} alt='theme' title='Смена темы' style={{ transform: `rotate(${rotateValue}deg)` }}/>;
 }
 
 export default ThemeIcon;

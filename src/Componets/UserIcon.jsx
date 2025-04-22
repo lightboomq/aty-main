@@ -1,4 +1,5 @@
 import React from 'react';
+import plusAvatar from '../assets/plusAvatar.svg';
 import s from '../StyleComponets/userIcon.module.css';
 
 function UserIcon() {
@@ -14,9 +15,14 @@ function UserIcon() {
         generateRandomColor();
     }, []);
 
+    const addAvatar = e => {
+        
+    };
+
     return (
-        <div style={{ backgroundColor: randomColor }} className={s.divWrapper}>
+        <div onClick={addAvatar} style={{ backgroundColor: randomColor }} className={s.wrapper} title='Добавить аву'>
             {`${user.firstName[0]}${user.secondName[0]}`}
+            <img className={s.plusAvatar} src={plusAvatar} alt='plusAva'/>
         </div>
     );
 }

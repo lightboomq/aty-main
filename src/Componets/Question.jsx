@@ -7,8 +7,9 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
     const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const typeTest = localStorage.getItem('typeTest');
     let url = '';
+    const typeTest = localStorage.getItem('typeTest');
+    
     if (typeTest === 'Экзамен') {
         url = 'http://localhost:3333/api/exam';
     } else if (typeTest === 'Тренировочный экзамен') {
@@ -39,7 +40,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         const copyTicket = JSON.parse(JSON.stringify(ticket));
         const copyUserAnswers = userAnswers;
         copyUserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-
+        console.log(copyUserAnswers)
         setTicket(addPropertyToTicket(copyTicket, id, json));
         setUserAnswers([...copyUserAnswers]);
         setIndexTicket(indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1);
@@ -86,9 +87,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         <>
             <div className={s.divWrapperInfo}>
                 <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>Вопрос: {indexTicket + 1}</h3>
-                <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>
-                    {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? typeTest : `Билет № ${typeTest}`}
-                </h3>
+                <h3 className={`${s.infoCount} ${s[ModeStorage.theme]}`}>{typeTest}</h3>
             </div>
 
             <div className={s.divWrapperImg}>

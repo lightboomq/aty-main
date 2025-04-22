@@ -8,7 +8,6 @@ import { io } from 'socket.io-client';
 function Comments({ ticket, indexTicket }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userIdFromLocalStorage = user.userId;
-    const ticketId = localStorage.getItem('ticketId');
     const [allComments, setAllComments] = React.useState([]);
     const [userComment, setUserComment] = React.useState('');
     const [isOpenComments, setIsOpenComments] = React.useState(false);
@@ -58,7 +57,7 @@ function Comments({ ticket, indexTicket }) {
 
     const sendComment = () => {
         webSocket.current.emit('send_comment', {
-            ticketId: ticketId,
+            ticketId: ticket[indexTicket].ticketId,
             questionId: ticket[indexTicket].questionId,
             text: userComment,
         });
@@ -71,13 +70,14 @@ function Comments({ ticket, indexTicket }) {
 
     const deleteComment = (userId, commentId, i) => {
         if (userId !== userIdFromLocalStorage) return;
-        const res = confirm('Удалить комментарий?');
-        if (!res) return;
-
+        // const res = confirm('Удалить комментарий?');
+        // if (!res) return;
         webSocket.current.emit('delete_comment', {
             commentId: commentId,
         });
-
+        webSocket.current.on('error', err => {
+            console.error('Ошибка WebSocket:', err);
+        });
         setAllComments(allComments.filter((_, index) => index !== i));
     };
 
@@ -101,23 +101,23 @@ function Comments({ ticket, indexTicket }) {
 
             {isOpenComments && (
                 <>
-                    {allComments.map((user, i) => {
+                    {allComments.map((comment, i) => {
                         return (
-                            <div key={user.commentId} className={s.wrapperComment}>
-                                <span onClick={() => deleteComment(user.userId, user.commentId, i)}>
-                                    {user.userId === userIdFromLocalStorage ? 'Удалить' : ''}
+                            <div key={comment.commentId} className={s.wrapperComment}>
+                                <span onClick={() => deleteComment(comment.userId, comment.commentId, i)}>
+                                    {comment.userId === userIdFromLocalStorage ? 'Удалить' : ''}
                                 </span>
 
                                 <div className={s.wrapperAuthor}>
                                     <div>
                                         <h5>{`${user.firstName} ${user.secondName}`}</h5>
-                                        <p className={s.time}>{setDateUserComment(user.time)}</p>
+                                        <p className={s.time}>{setDateUserComment(comment.time)}</p>
                                     </div>
                                 </div>
 
                                 <div className={s.userComment}>
                                     <div className={s.triangleUp}> </div>
-                                    {user.text}
+                                    {comment.text}
                                 </div>
 
                                 <div className={s.wrapperBtns}>
