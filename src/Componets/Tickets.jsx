@@ -65,7 +65,7 @@ function Tickets() {
 
         const token = JSON.parse(localStorage.getItem('user'));
         const typeTest = e.target.getAttribute('type-test');
-        console.log(typeTest)
+       
         const ticketId = e.target.getAttribute('ticketid');
         const url =
             typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'

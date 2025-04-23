@@ -12,6 +12,16 @@ import { useNavigate } from 'react-router-dom';
 import s from '../StyleComponets/test.module.css';
 
 function Testing() {
+    // React.useEffect(() => { доработать
+    //     const user = localStorage.getItem('user');
+    //     console.log(user)
+    //     if (user === null) {
+    //         console.log(true)
+    //         const navigate = useNavigate();
+    //         navigate('/');
+    //     }
+    // }, []);
+
     const typeTest = localStorage.getItem('typeTest');
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '', questionId: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
@@ -31,23 +41,24 @@ function Testing() {
     React.useEffect(() => {
         const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));
         const arr = [];
-    
+
         for (let i = 0; i < localeStorageTicket.length; i++) {
             arr.push(null);
         }
 
-        setTicket(localeStorageTicket);// основной массив вопросов, из выбраного билета или экзамен
+        setTicket(localeStorageTicket); // основной массив вопросов, из выбраного билета или экзамен
         setUserAnswers(arr); //второстепенный массив для записи  0 или 1 после ответа на вопрос + опора при навигаций по вопросам
     }, []);
 
     React.useEffect(() => {
-        if (!userAnswers.includes(null) && ticket.length > 2) { //Переход на результат тестирования после ответа на все вопросы
+        if (!userAnswers.includes(null) && ticket.length > 2) {
+            //Переход на результат тестирования после ответа на все вопросы
             const correctAnswers = userAnswers.reduce((accum, num) => accum + num, 0);
             localStorage.setItem('readyTicket', JSON.stringify(ticket));
             localStorage.setItem('correctAnswers', correctAnswers);
-            return navigate('/result'); 
+            return navigate('/result');
         }
-    }, [userAnswers, ticket, navigate]); 
+    }, [userAnswers, ticket, navigate]);
 
     return (
         <div className={`${s.divWrapper} ${s[ModeStorage.theme]}`}>
@@ -62,7 +73,9 @@ function Testing() {
                 <Question {...states} />
                 <StepBtns {...states} />
 
-                {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? '' : <Comments {...states} />}
+                {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? null : (
+                    <Comments ticketId={ticket[indexTicket].ticketId} questionId={ticket[indexTicket].questionId} />
+                )}
             </div>
         </div>
     );

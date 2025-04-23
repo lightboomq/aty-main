@@ -51,17 +51,9 @@ function UserResultTest({ theme, setTheme }) {
 
                 <div className={s.divWrapperInfo}>
                     {correctAnswers < ticket.length - 2 ? (
-                        <h2 className={s.didNotPass}>
-                            {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
-                                ? `${typeTest} не сдан`
-                                : `Билет № ${typeTest} не сдан`}
-                        </h2>
+                        <h2 className={s.didNotPass}>{`${typeTest} не сдан`}</h2>
                     ) : (
-                        <h2 className={s.passed}>
-                            {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
-                                ? `${typeTest} сдан`
-                                : `Билет № ${typeTest} сдан`}
-                        </h2>
+                        <h2 className={s.passed}>{`${typeTest} сдан`}</h2>
                     )}
 
                     <h3 className={s.info}>{`Правильных ответов ${correctAnswers} из ${ticket.length}`}</h3>

@@ -1,84 +1,132 @@
 import React from 'react';
-import s from '../StyleComponets/comments.module.css';
-import like from '../assets/likeComment.svg';
-import disLike from '../assets/disLikeComment.svg';
+import likeImg from '../assets/likeComment.svg';
+import disLikeImg from '../assets/disLikeComment.svg';
 import iconComments from '../assets/comments.svg';
 import { io } from 'socket.io-client';
+import Errors from '../store/Errors';
+import { observer } from 'mobx-react-lite';
+import s from '../StyleComponets/comments.module.css';
 
-function Comments({ ticket, indexTicket }) {
+function Comments({ ticketId, questionId }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userIdFromLocalStorage = user.userId;
     const [allComments, setAllComments] = React.useState([]);
     const [userComment, setUserComment] = React.useState('');
-    const [isOpenComments, setIsOpenComments] = React.useState(false);
-
+    const [isOpenComments, setIsOpenComments] = React.useState(true);
+    // const [likes,setLikes] = React.useState([]);
     const webSocket = React.useRef(null);
-    //дописать логику на закрытие соединения на флан isOpenComments
+
     React.useEffect(() => {
+        //конект с сервером
         const user = JSON.parse(localStorage.getItem('user'));
         webSocket.current = io('ws://localhost:3333/api/comments', {
             query: {
                 token: user.token,
             },
         });
-        webSocket.current.on('connect', () => {
-            console.log('connected');
-        });
+        webSocket.current.on('connect', () => {});
+
+        return () => {
+            webSocket.current.disconnect();
+        };
     }, []);
 
     React.useEffect(() => {
-        if (ticket[indexTicket].ticketId === undefined) return;
+        if (ticketId === undefined) return;
 
         const handleComments = comments => setAllComments(comments);
-        const handleNewComment = comment => setAllComments(prev => [...prev, comment]);
-        const handleError = err => console.error('WebSocket error:', err);
+
+        webSocket.current.on('get_all_comments', handleComments); // получение массива объектов  всех комментарий с сервера
 
         webSocket.current.emit('get_all_comments', {
-            ticketId: ticket[indexTicket].ticketId,
-            questionId: ticket[indexTicket].questionId,
+            //запрос на все комментарий
+            ticketId,
+            questionId,
         });
 
-        webSocket.current.on('get_all_comments', handleComments);
-        webSocket.current.on('send_comment', handleNewComment);
-
         webSocket.current.emit('join_room', {
-            ticketId: ticket[indexTicket].ticketId,
-            questionId: ticket[indexTicket].questionId,
+            //соединение с комнатой
+            ticketId,
+            questionId,
         });
 
         return () => {
             if (webSocket.current) {
                 webSocket.current.off('get_all_comments', handleComments);
-                webSocket.current.off('send_comment', handleNewComment);
-                webSocket.current.off('error', handleError);
             }
         };
-    }, [ticket, indexTicket]);
+    }, [ticketId, questionId]);
 
-    const sendComment = () => {
-        webSocket.current.emit('send_comment', {
-            ticketId: ticket[indexTicket].ticketId,
-            questionId: ticket[indexTicket].questionId,
-            text: userComment,
+    React.useEffect(() => {
+        const handleLikes = usersLiked => {
+            const idOfCommentLiked = usersLiked.commentId;
+            setAllComments(prev =>
+                prev.map(comments =>
+                    comments.commentId === idOfCommentLiked
+                        ? { ...comments, likes: [...usersLiked.likes] } 
+                        : comments,
+                ),
+            );
+        };
+        const handleDisLikes = usersDisLiked => {
+            console.log(usersDisLiked)
+            const idOfCommentDisLiked = usersDisLiked.commentId;
+            setAllComments(prev =>
+                prev.map(comments =>
+                    comments.commentId === idOfCommentDisLiked
+                        ? { ...comments, dislikes: [...usersDisLiked.dislikes] } 
+                        : comments,
+                ),
+            );
+        };
+        const handleNewComment = newComment => setAllComments(prev => [...prev, newComment]);
+        const handleDeletedComment = deletedComment => setAllComments(prev => prev.filter(el => el.commentId !== deletedComment.commentId));
+        const handleError = err => Errors.setMessage(err.message);
+
+        webSocket.current.on('like_comment', handleLikes);
+        webSocket.current.on('dislike_comment', handleDisLikes);
+        webSocket.current.on('send_comment', handleNewComment);
+        webSocket.current.on('delete_comment', handleDeletedComment);
+        webSocket.current.on('error', handleError);
+
+        return () => {
+            webSocket.current.off('like_comment', handleLikes);
+            webSocket.current.off('dislike_comment', handleDisLikes);
+            webSocket.current.off('send_comment', handleNewComment);
+            webSocket.current.off('delete_comment', handleDeletedComment);
+            webSocket.current.off('error');
+        };
+    }, []);
+
+    const like = commentId => {
+        webSocket.current.emit('like_comment', {
+            ticketId,
+            questionId,
+            commentId,
         });
-
-        setUserComment('');
-        webSocket.current.on('error', err => {
-            console.error('Ошибка WebSocket:', err);
+    };
+    const dislike = commentId => {
+        webSocket.current.emit('dislike_comment', {
+            ticketId,
+            questionId,
+            commentId,
         });
     };
 
-    const deleteComment = (userId, commentId, i) => {
+    const sendComment = () => {
+        if (!userComment.trim()) return Errors.setMessage('Комментарий не должен быть пустым');
+        webSocket.current.emit('send_comment', {
+            ticketId,
+            questionId,
+            text: userComment,
+        });
+        Errors.setMessage('');
+        setUserComment('');
+    };
+    
+    const deleteComment = (userId, commentId) => {
         if (userId !== userIdFromLocalStorage) return;
-        // const res = confirm('Удалить комментарий?');
-        // if (!res) return;
-        webSocket.current.emit('delete_comment', {
-            commentId: commentId,
-        });
-        webSocket.current.on('error', err => {
-            console.error('Ошибка WebSocket:', err);
-        });
-        setAllComments(allComments.filter((_, index) => index !== i));
+        webSocket.current.emit('delete_comment', { commentId });
     };
 
     const setDateUserComment = dateStr => {
@@ -91,6 +139,8 @@ function Comments({ ticket, indexTicket }) {
 
         return `${dayOfMonth}.${month}.${year} ${hour}:${minutes}`;
     };
+
+    console.log(allComments)
 
     return (
         <div className={s.wrapper}>
@@ -110,7 +160,7 @@ function Comments({ ticket, indexTicket }) {
 
                                 <div className={s.wrapperAuthor}>
                                     <div>
-                                        <h5>{`${user.firstName} ${user.secondName}`}</h5>
+                                        <h5>{`${comment.firstName} ${comment.secondName}`}</h5>
                                         <p className={s.time}>{setDateUserComment(comment.time)}</p>
                                     </div>
                                 </div>
@@ -122,14 +172,14 @@ function Comments({ ticket, indexTicket }) {
 
                                 <div className={s.wrapperBtns}>
                                     <div style={{ display: 'flex' }}>
-                                        <button className={s.btns} type='button'>
-                                            <img className={s.imgLike} src={like} alt='like' />
-                                            <span className={s.likesCounter}>0</span>
+                                        <button onClick={() => like(comment.commentId)} className={s.btns} type='button'>
+                                            <img className={s.imgLike} src={likeImg} alt='like' />
+                                            <span className={s.likesCounter}>{comment.likes.length}</span>
                                         </button>
 
-                                        <button className={s.btns} style={{ marginLeft: '10px' }} type='button'>
-                                            <img className={s.imgDisLike} src={disLike} alt='like' />
-                                            <span className={s.likesCounter}>0</span>
+                                        <button onClick={() => dislike(comment.commentId)} className={s.btns} style={{ marginLeft: '10px' }} type='button'>
+                                            <img className={s.imgDisLike} src={disLikeImg} alt='like' />
+                                            <span className={s.likesCounter}>{comment.dislikes.length}</span>
                                         </button>
                                     </div>
 
@@ -152,10 +202,11 @@ function Comments({ ticket, indexTicket }) {
                     <button onClick={sendComment} className={s.btnSendComment} type='button'>
                         Добавить комментарий
                     </button>
+                    <span style={{ color: 'red' }}>{Errors.getMessage()}</span>
                 </>
             )}
         </div>
     );
 }
 
-export default Comments;
+export default observer(Comments);
