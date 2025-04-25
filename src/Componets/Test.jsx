@@ -6,26 +6,18 @@ import Timer from './Timer.jsx';
 import Question from './Question.jsx';
 import StepBtns from './StepBtns.jsx';
 import ModeStorage from '../store/ModeStorage.js';
-import Comments from './Comments.jsx';
+import UserComments from './UserComments.jsx';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
+import iconComments from '../assets/comments.svg';
 import s from '../StyleComponets/test.module.css';
 
 function Testing() {
-    // React.useEffect(() => { доработать
-    //     const user = localStorage.getItem('user');
-    //     console.log(user)
-    //     if (user === null) {
-    //         console.log(true)
-    //         const navigate = useNavigate();
-    //         navigate('/');
-    //     }
-    // }, []);
-
     const typeTest = localStorage.getItem('typeTest');
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '', questionId: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
+    const [isOpenComments, setIsOpenComments] = React.useState(true);
 
     const navigate = useNavigate();
 
@@ -61,11 +53,11 @@ function Testing() {
     }, [userAnswers, ticket, navigate]);
 
     return (
-        <div className={`${s.divWrapper} ${s[ModeStorage.theme]}`}>
-            <div className={`${s.divWrapperContent} ${s[ModeStorage.theme]}`}>
+        <div className={`${s.wrapper} ${s[ModeStorage.theme]}`}>
+            <div className={`${s.wrapperContent} ${s[ModeStorage.theme]}`}>
                 <Header />
                 <NavOfQuestion {...states} />
-                <div className={s.test}>
+                <div className={s.wrapperTimer}>
                     {typeTest !== 'Экзамен' && <GoBack />}
                     <Timer {...states} />
                 </div>
@@ -73,9 +65,11 @@ function Testing() {
                 <Question {...states} />
                 <StepBtns {...states} />
 
-                {typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? null : (
-                    <Comments ticketId={ticket[indexTicket].ticketId} questionId={ticket[indexTicket].questionId} />
-                )}
+                <div className={s.wrapperCountComments} onClick={() => setIsOpenComments(!isOpenComments)}>
+                    <img src={iconComments} alt='comments' />
+                    <p className={s.countComments}>Комментарии: 0</p>
+                </div>
+                {isOpenComments && <UserComments ticketId={ticket[indexTicket].ticketId} questionId={ticket[indexTicket].questionId} />}
             </div>
         </div>
     );

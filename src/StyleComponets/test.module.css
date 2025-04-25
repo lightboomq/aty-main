@@ -6,13 +6,13 @@
     scrollbar-gutter: stable;
 }
 
-.divWrapper{
+.wrapper{
     width: 100%;
     min-height: 100vh;
     transition-property:background-color;
     transition-duration: 0.5s;
 }
-.divWrapperContent{
+.wrapperContent{
     max-width: 1024px;
     margin: auto;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -21,18 +21,26 @@
     transition-property:background-color;
     transition-duration: 0.5s;
 }
-
-.divWrapperContent.darkMode{
-    background-color: #17212B;
+.wrapperCountComments{
+    display: flex;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.countComments{
+    color: #056DF4;
+    margin-left: 5px;
 }
 
+.wrapperContent.darkMode{
+    background-color: #17212B;
+}
 .darkMode{
     background-color: #070B11;
 }
 .systemMode{
     background-color: white;
 }
-.test{
+.wrapperTimer{
     display: flex;
     justify-content: space-between;
     width: 100%;

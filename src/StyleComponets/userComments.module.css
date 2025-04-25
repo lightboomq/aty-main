@@ -1,0 +1,81 @@
+.wrapper {
+    width: 100%;
+    margin-top: 20px;
+}
+.wrapperUserComment {
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    margin-top: 10px;
+    padding-bottom: 10px;
+    word-break: break-word;
+    border-bottom: 1px solid rgb(228, 225, 225);
+}
+.wrapperUserComment:nth-last-child(2) {
+    border: none;
+}
+.avatar {
+    min-width: 35px;
+    width: 35px;
+    height: 35px;
+    background-color: rgb(211, 210, 210);
+    border-radius: 50%;
+}
+.author {
+    margin-top: 2px;
+}
+.text {
+    font-size: 13px;
+}
+.wrapperActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    font-size: 13px;
+}
+.date {
+    color: #747e89;
+}
+.reply {
+    all: unset;
+    cursor: pointer;
+    color: #2a5885;
+    margin-left: 8px;
+}
+.btnLike {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.highlightLike {
+    color: red;
+}
+
+.likesConter {
+    font-size: 14px;
+    margin-left: 5px;
+}
+
+.wrapperInput {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.inputArea {
+    width: 450px;
+    height: 34px;
+    border-radius: 5px;
+    padding: 7px;
+    margin-left: 15px;
+    resize: none;
+}
+
+.sendComment {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    cursor: pointer;
+}
