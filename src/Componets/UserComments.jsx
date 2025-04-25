@@ -1,5 +1,6 @@
 import React from 'react';
 import logoLike from '../assets/like.svg';
+import logoRedLike from '../assets/redLike.svg';
 import logoSend from '../assets/sendComment.svg';
 import { io } from 'socket.io-client';
 import Errors from '../store/Errors';
@@ -128,10 +129,10 @@ function UserComments({ ticketId, questionId }) {
         for (let i = 0; i < likes.length; i++) {
             const userId = likes[i].userId;
             if (userId === userIdFromLocalStorage) {
-                return `${s.btnLike} ${s.highlightLike}`;
+                return logoRedLike
             }
         }
-        return s.btnLike;
+        return logoLike
     };
 
     return (
@@ -159,8 +160,8 @@ function UserComments({ ticketId, questionId }) {
                                     )}
                                 </div>
 
-                                <button onClick={() => like(comment.commentId)} className={highlightLike(comment.likes)} type='button'>
-                                    <img className={s.li} src={logoLike} alt='like' />
+                                <button onClick={() => like(comment.commentId)} type='button' className={s.btnLike}>
+                                    <img src={highlightLike(comment.likes)} alt='like' />
                                     <span className={s.likesConter}>{comment.likes.length}</span>
                                 </button>
                             </div>
