@@ -7,12 +7,13 @@ import Errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
 import s from '../StyleComponets/userComments.module.css';
 
-function UserComments({ ticketId, questionId }) {
+function UserComments({ ticketId, questionId, setCounterComments }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userIdFromLocalStorage = user.userId;
     const [allComments, setAllComments] = React.useState([]);
     const [userComment, setUserComment] = React.useState('');
     const [isShowAddComment, setIsShowAddComment] = React.useState(false); //флаг от прыгающей верстки
+    const [isPlaceholder, setIsPlaceholder] = React.useState(true);
 
     const webSocket = React.useRef(null);
     const inputRef = React.useRef(null);
@@ -72,8 +73,14 @@ function UserComments({ ticketId, questionId }) {
             );
         };
 
-        const handleNewComment = newComment => setAllComments(prev => [newComment, ...prev]);
-        const handleDeletedComment = deletedComment => setAllComments(prev => prev.filter(el => el.commentId !== deletedComment.commentId));
+        const handleNewComment = newComment => {
+            setAllComments(prev => [newComment, ...prev]);
+            setCounterComments(prev => ({ ...prev, count: prev.count + 1 }));
+        };
+        const handleDeletedComment = deletedComment =>{
+            setAllComments(prev => prev.filter(el => el.commentId !== deletedComment.commentId));
+            setCounterComments(prev => ({ ...prev, count: prev.count - 1 }));
+        } 
         const handleError = err => Errors.setMessage(err.message);
 
         webSocket.current.on('like_comment', handleLikes);
@@ -81,12 +88,13 @@ function UserComments({ ticketId, questionId }) {
         webSocket.current.on('delete_comment', handleDeletedComment);
         webSocket.current.on('error', handleError);
         return () => {
+            console.log('unmount')
             webSocket.current.off('like_comment', handleLikes);
             webSocket.current.off('send_comment', handleNewComment);
             webSocket.current.off('delete_comment', handleDeletedComment);
             webSocket.current.off('error');
         };
-    }, []);
+    }, [setCounterComments]);
 
     const like = commentId => {
         webSocket.current.emit('like_comment', {
@@ -121,8 +129,6 @@ function UserComments({ ticketId, questionId }) {
         return logoLike;
     };
 
-    const [isPlaceholder, setIsPlaceholder] = React.useState(true);
-
     const sendComment = () => {
         if (!userComment.trim()) return Errors.setMessage('Комментарий не должен быть пустым');
         webSocket.current.emit('send_comment', {
@@ -132,19 +138,13 @@ function UserComments({ ticketId, questionId }) {
         });
         Errors.setMessage('');
         setUserComment('');
-        if (userComment) {
-        }
-        setIsPlaceholder(true);
-        inputRef.current.textContent = '';
-    };
-    const handleFocus = () => {
         setIsPlaceholder(false);
+        inputRef.current.textContent = '';
     };
 
     const handleBlur = () => {
-        if (userComment.trim() === '') {
-            setIsPlaceholder(true);
-        }
+        if (userComment.trim() === '') return setIsPlaceholder(true);
+        setIsPlaceholder(false);
     };
     const handleKeyDown = e => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -153,28 +153,14 @@ function UserComments({ ticketId, questionId }) {
         }
     };
 
+    const sortedCommentsByLike = React.useMemo(() => {//оптимищация сортировки через хук от ререндеров
+         return [...allComments].sort((a, b) => b.likes.length - a.likes.length)
+    }, [allComments]);
+
+
     return (
         <div className={s.wrapper}>
-            {isShowAddComment && (
-                <div className={s.wrapperInput}>
-                    <div className={s.avatar}> </div>
-                    <div
-                        contentEditable='true'
-                        className={s.inputArea}
-                        onInput={e => setUserComment(e.target.textContent)}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
-                        ref={inputRef}
-                        suppressContentEditableWarning
-                    >
-                        {isPlaceholder && 'Напишите комментарии...'}
-                    </div>
-                    <img onClick={sendComment} className={s.sendComment} src={logoSend} alt='sendComment' />
-                    <span style={{ color: 'red' }}>{Errors.getMessage()}</span>
-                </div>
-            )}
-            {allComments.map(comment => {
+            {sortedCommentsByLike.map(comment => {
                 return (
                     <div key={comment.commentId} className={s.wrapperUserComment}>
                         <div className={s.avatar}> </div>
@@ -206,22 +192,26 @@ function UserComments({ ticketId, questionId }) {
                     </div>
                 );
             })}
-            {/* {isShowAddComment && (
+            {isShowAddComment && (
                 <div className={s.wrapperInput}>
                     <div className={s.avatar}> </div>
-                    <textarea
-                        ref={inputRef}
-                        value={userComment}
-                        onChange={e => setUserComment(e.target.value)}
+
+                    <div
+                        contentEditable='true'
+                        className={`${s.inputArea} ${isPlaceholder && s.placeholder}`}
+                        onInput={e => setUserComment(e.target.textContent)}
+                        onFocus={() => setIsPlaceholder(false)}
+                        onBlur={handleBlur}
                         onKeyDown={handleKeyDown}
-                        className={s.inputArea}
-                        type='text'
-                        placeholder='Написать комментарии...'
-                    />
+                        ref={inputRef}
+                        suppressContentEditableWarning
+                    >
+                        {isPlaceholder && 'Напишите комментарии...'}
+                    </div>
                     <img onClick={sendComment} className={s.sendComment} src={logoSend} alt='sendComment' />
                     <span style={{ color: 'red' }}>{Errors.getMessage()}</span>
                 </div>
-            )} */}
+            )}
         </div>
     );
 }

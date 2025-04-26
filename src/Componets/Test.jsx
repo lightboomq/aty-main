@@ -18,8 +18,8 @@ function Testing() {
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '', questionId: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
-    const [counterComments, setCounterComments] = React.useState({});
-    const [isOpenComments, setIsOpenComments] = React.useState(true);
+    const [counterComments, setCounterComments] = React.useState({count:0});
+    const [isOpenComments, setIsOpenComments] = React.useState(false);
 
     const navigate = useNavigate();
 
@@ -44,10 +44,9 @@ function Testing() {
         setUserAnswers(arr); //второстепенный массив для записи  0 или 1 после ответа на вопрос + опора при навигаций по вопросам
     }, []);
 
-    React.useEffect(() => {
+    React.useEffect(() => { //запрос на счетчик всех комментариев в вопросе
         async function getCountComments() {
             const user = JSON.parse(localStorage.getItem('user'));
-
             try {
                 const res = await fetch('http://localhost:3333/api/comments/count', {
                     method: 'POST',
@@ -67,6 +66,7 @@ function Testing() {
                 }
                 const data = await res.json();
                 setCounterComments(data);
+                setIsOpenComments(false)
             } catch (err) {
                 Errors.setMessage(err.message);
             }
