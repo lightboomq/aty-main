@@ -7,6 +7,7 @@ import Question from './Question.jsx';
 import StepBtns from './StepBtns.jsx';
 import ModeStorage from '../store/ModeStorage.js';
 import UserComments from './UserComments.jsx';
+import Errors from '../store/Errors.js';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import iconComments from '../assets/comments.svg';
@@ -17,6 +18,7 @@ function Testing() {
     const [ticket, setTicket] = React.useState([{ question: '', answers: [], img: '', questionId: '' }]);
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
+    const [counterComments, setCounterComments] = React.useState({});
     const [isOpenComments, setIsOpenComments] = React.useState(true);
 
     const navigate = useNavigate();
@@ -43,6 +45,36 @@ function Testing() {
     }, []);
 
     React.useEffect(() => {
+        async function getCountComments() {
+            const user = JSON.parse(localStorage.getItem('user'));
+
+            try {
+                const res = await fetch('http://localhost:3333/api/comments/count', {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ticketId: ticket[indexTicket].ticketId,
+                        questionId: ticket[indexTicket].questionId,
+                    }),
+                });
+
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw err;
+                }
+                const data = await res.json();
+                setCounterComments(data);
+            } catch (err) {
+                Errors.setMessage(err.message);
+            }
+        }
+        getCountComments();
+    }, [ticket, indexTicket]);
+
+    React.useEffect(() => {
         if (!userAnswers.includes(null) && ticket.length > 2) {
             //Переход на результат тестирования после ответа на все вопросы
             const correctAnswers = userAnswers.reduce((accum, num) => accum + num, 0);
@@ -67,9 +99,15 @@ function Testing() {
 
                 <div className={s.wrapperCountComments} onClick={() => setIsOpenComments(!isOpenComments)}>
                     <img src={iconComments} alt='comments' />
-                    <p className={s.countComments}>Комментарии: 0</p>
+                    <p className={s.countComments}>Комментарии: {counterComments.count}</p>
                 </div>
-                {isOpenComments && <UserComments ticketId={ticket[indexTicket].ticketId} questionId={ticket[indexTicket].questionId} />}
+                {isOpenComments && (
+                    <UserComments
+                        ticketId={ticket[indexTicket].ticketId}
+                        questionId={ticket[indexTicket].questionId}
+                        setCounterComments={setCounterComments}
+                    />
+                )}
             </div>
         </div>
     );

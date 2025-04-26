@@ -15,6 +15,7 @@ function UserComments({ ticketId, questionId }) {
     const [isShowAddComment, setIsShowAddComment] = React.useState(false); //флаг от прыгающей верстки
 
     const webSocket = React.useRef(null);
+    const inputRef = React.useRef(null);
 
     React.useEffect(() => {
         //конект с сервером
@@ -25,12 +26,9 @@ function UserComments({ ticketId, questionId }) {
                 token: user.token,
             },
         });
-        webSocket.current.on('connect', () => {
-            console.log('connect');
-        });
+        webSocket.current.on('connect', () => {});
 
         return () => {
-            console.log('disconect');
             webSocket.current.disconnect();
         };
     }, []);
@@ -83,7 +81,6 @@ function UserComments({ ticketId, questionId }) {
         webSocket.current.on('delete_comment', handleDeletedComment);
         webSocket.current.on('error', handleError);
         return () => {
-            console.log('размонтирован OFF3');
             webSocket.current.off('like_comment', handleLikes);
             webSocket.current.off('send_comment', handleNewComment);
             webSocket.current.off('delete_comment', handleDeletedComment);
@@ -97,17 +94,6 @@ function UserComments({ ticketId, questionId }) {
             questionId,
             commentId,
         });
-    };
-
-    const sendComment = () => {
-        if (!userComment.trim()) return Errors.setMessage('Комментарий не должен быть пустым');
-        webSocket.current.emit('send_comment', {
-            ticketId,
-            questionId,
-            text: userComment,
-        });
-        Errors.setMessage('');
-        setUserComment('');
     };
 
     const deleteComment = commentId => {
@@ -129,14 +115,65 @@ function UserComments({ ticketId, questionId }) {
         for (let i = 0; i < likes.length; i++) {
             const userId = likes[i].userId;
             if (userId === userIdFromLocalStorage) {
-                return logoRedLike
+                return logoRedLike;
             }
         }
-        return logoLike
+        return logoLike;
+    };
+
+    const [isPlaceholder, setIsPlaceholder] = React.useState(true);
+
+    const sendComment = () => {
+        if (!userComment.trim()) return Errors.setMessage('Комментарий не должен быть пустым');
+        webSocket.current.emit('send_comment', {
+            ticketId,
+            questionId,
+            text: userComment,
+        });
+        Errors.setMessage('');
+        setUserComment('');
+        if (userComment) {
+        }
+        setIsPlaceholder(true);
+        inputRef.current.textContent = '';
+    };
+    const handleFocus = () => {
+        setIsPlaceholder(false);
+    };
+
+    const handleBlur = () => {
+        if (userComment.trim() === '') {
+            setIsPlaceholder(true);
+        }
+    };
+    const handleKeyDown = e => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendComment();
+        }
     };
 
     return (
         <div className={s.wrapper}>
+            {isShowAddComment && (
+                <div className={s.wrapperInput}>
+                    <div className={s.avatar}> </div>
+                    <div
+                        contentEditable='true'
+                        className={s.inputArea}
+                        onInput={e => setUserComment(e.target.textContent)}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        onKeyDown={handleKeyDown}
+                        ref={inputRef}
+                        suppressContentEditableWarning
+                    >
+                        {isPlaceholder && 'Напишите комментарии...'}
+                    </div>
+                    <img onClick={sendComment} className={s.sendComment} src={logoSend} alt='sendComment' />
+                    <span style={{ color: 'red' }}>{Errors.getMessage()}</span>
+                </div>
+            )}
             {allComments.map(comment => {
                 return (
                     <div key={comment.commentId} className={s.wrapperUserComment}>
@@ -169,12 +206,14 @@ function UserComments({ ticketId, questionId }) {
                     </div>
                 );
             })}
-            {isShowAddComment && (
+            {/* {isShowAddComment && (
                 <div className={s.wrapperInput}>
                     <div className={s.avatar}> </div>
                     <textarea
+                        ref={inputRef}
                         value={userComment}
                         onChange={e => setUserComment(e.target.value)}
+                        onKeyDown={handleKeyDown}
                         className={s.inputArea}
                         type='text'
                         placeholder='Написать комментарии...'
@@ -182,7 +221,7 @@ function UserComments({ ticketId, questionId }) {
                     <img onClick={sendComment} className={s.sendComment} src={logoSend} alt='sendComment' />
                     <span style={{ color: 'red' }}>{Errors.getMessage()}</span>
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

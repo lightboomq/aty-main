@@ -62,13 +62,15 @@
 
 .inputArea {
     width: 450px;
-    height: 34px;
     border-radius: 5px;
-    padding: 7px;
     margin-left: 15px;
-    resize: none;
+    padding: 7px 12px 9px;
+    border: 1px solid black;
 }
-
+.placeholder{
+    font-size: 14px;
+    color: #747e89;
+}
 .sendComment {
     width: 30px;
     height: 30px;
