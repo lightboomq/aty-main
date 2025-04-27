@@ -1,41 +1,52 @@
 import React from 'react';
 import s from '../StyleComponets/authorization.module.css';
+import Errors from '../store/Errors';
+import { observer } from 'mobx-react-lite';
 import { Link, useNavigate } from 'react-router-dom';
 
 function Authorization() {
-    React.useEffect(()=>{
+    React.useEffect(() => {
         localStorage.clear();
-    },[])
-    
+    }, []);
+
     const [mail, setMail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const navigate = useNavigate();
-    
-    async function login() {
-        const url = 'http://localhost:3333/api/auth/login';
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: mail,
-                password: password,
-            }),
-        });
 
-        const userData = await response.json();
-        userData.email = mail
-        localStorage.setItem('user', JSON.stringify(userData));
-        navigate('/tickets');
+    async function login() {
+        try {
+            const res = await fetch('http://localhost:3333/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: mail,
+                    password: password,
+                }),
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                console.log(err);
+                throw err;
+            }
+            const userData = await res.json();
+            userData.email = mail;
+            localStorage.setItem('user', JSON.stringify(userData));
+            navigate('/tickets');
+        } catch (err) {
+            Errors.setMessage(err.message);
+        }
     }
 
     return (
         <form className={s.wrapper}>
             <h3 className={s.regText}>Вход</h3>
-            
+
             <h3>sorokin@gmail.com</h3>
-            <h3>228sorokin</h3><br />
+            <h3>228sorokin</h3>
+            <br />
 
             <h3>lebedev@gmail.com</h3>
             <h3>228lebedev</h3>
@@ -65,8 +76,9 @@ function Authorization() {
                     Нету аккаунта? Зарегестрируйтесь
                 </Link>
             </div>
+            <div className={s.error}>{Errors.getMessage()}</div>
         </form>
     );
 }
 
-export default Authorization;
+export default observer(Authorization);

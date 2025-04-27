@@ -64,6 +64,15 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
     }, [ticketId, questionId]);
 
     React.useEffect(() => {
+        const handleNewComment = newComment => {
+            setAllComments(prev => [newComment, ...prev]);
+            setCounterComments(prev => ({ ...prev, count: prev.count + 1 }));
+        };
+
+        const handleReplyUser = test => {
+            console.log(test);
+        };
+
         const handleLikes = usersLiked => {
             const idOfSelectedComment = usersLiked.commentId;
             setAllComments(prev =>
@@ -73,28 +82,31 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
             );
         };
 
-        const handleNewComment = newComment => {
-            setAllComments(prev => [newComment, ...prev]);
-            setCounterComments(prev => ({ ...prev, count: prev.count + 1 }));
-        };
-        const handleDeletedComment = deletedComment =>{
+        const handleDeletedComment = deletedComment => {
             setAllComments(prev => prev.filter(el => el.commentId !== deletedComment.commentId));
             setCounterComments(prev => ({ ...prev, count: prev.count - 1 }));
-        } 
+        };
         const handleError = err => Errors.setMessage(err.message);
 
-        webSocket.current.on('like_comment', handleLikes);
         webSocket.current.on('send_comment', handleNewComment);
+        webSocket.current.on('send_reply_to_comment', handleReplyUser);
         webSocket.current.on('delete_comment', handleDeletedComment);
+        webSocket.current.on('like_comment', handleLikes);
         webSocket.current.on('error', handleError);
         return () => {
-            console.log('unmount')
-            webSocket.current.off('like_comment', handleLikes);
+            console.log('unmount');
             webSocket.current.off('send_comment', handleNewComment);
+            webSocket.current.off('send_reply_to_comment', handleReplyUser);
             webSocket.current.off('delete_comment', handleDeletedComment);
-            webSocket.current.off('error');
+            webSocket.current.off('like_comment', handleLikes);
+            webSocket.current.off('error', handleError);
         };
     }, [setCounterComments]);
+
+    const sortedCommentsByLike = React.useMemo(() => {
+        //оптимищация сортировки через хук от ререндеров
+        return [...allComments].sort((a, b) => b.likes.length - a.likes.length);
+    }, [allComments]);
 
     const like = commentId => {
         webSocket.current.emit('like_comment', {
@@ -153,14 +165,22 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
         }
     };
 
-    const sortedCommentsByLike = React.useMemo(() => {//оптимищация сортировки через хук от ререндеров
-         return [...allComments].sort((a, b) => b.likes.length - a.likes.length)
-    }, [allComments]);
-
-
+    const replyUser = (text, commentId, userId,name) => {
+        console.log(`${name} commentId: `, commentId);
+        console.log(`${name} userId:`, userId);
+        // webSocket.current.emit('send_reply_to_comment', {
+        //     ticketId,
+        //     questionId,
+        //     text,
+        //     rootCommentId: commentId,
+        //     replyToCommentId: commentId,
+        // });
+    };
+console.log(allComments)
     return (
         <div className={s.wrapper}>
             {sortedCommentsByLike.map(comment => {
+                
                 return (
                     <div key={comment.commentId} className={s.wrapperUserComment}>
                         <div className={s.avatar}> </div>
@@ -177,7 +197,11 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
                                             Удалить
                                         </button>
                                     ) : (
-                                        <button className={s.reply} type='button'>
+                                        <button
+                                            onClick={() => replyUser(comment.text, comment.commentId, comment.userId, comment.secondName)}
+                                            className={s.reply}
+                                            type='button'
+                                        >
                                             Ответить
                                         </button>
                                     )}

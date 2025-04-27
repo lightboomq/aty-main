@@ -19,7 +19,7 @@ function Testing() {
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
     const [counterComments, setCounterComments] = React.useState({count:0});
-    const [isOpenComments, setIsOpenComments] = React.useState(false);
+    const [isOpenComments, setIsOpenComments] = React.useState(true);
 
     const navigate = useNavigate();
 
@@ -66,7 +66,7 @@ function Testing() {
                 }
                 const data = await res.json();
                 setCounterComments(data);
-                setIsOpenComments(false)
+                // setIsOpenComments(false)
             } catch (err) {
                 Errors.setMessage(err.message);
             }
