@@ -5,15 +5,8 @@
     padding: 7px 0px 7px 0px ;
     border-bottom: 1px solid rgb(228, 225, 225);
 }
-.wrapperUserComment:nth-last-child(2) {
+.wrapperUserComment:nth-last-child(1) {
     border: none;
-}
-.avatar {
-    min-width: 24px;
-    width: 24px;
-    height: 24px;
-    background-color: rgb(211, 210, 210);
-    border-radius: 50%;
 }
 .author {
     font-size: 13px;

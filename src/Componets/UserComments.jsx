@@ -4,6 +4,7 @@ import InputComment from './InputComment';
 import InputReplyComment from './InputReplyComment';
 import logoLike from '../assets/like.svg';
 import logoRedLike from '../assets/redLike.svg';
+import logoNoAvatar from '../assets/noAvatar.png'
 import { io } from 'socket.io-client';
 import Errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
@@ -17,7 +18,6 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
     const [isShowAddComment, setIsShowAddComment] = React.useState(false); //флаг от прыгающей верстки
 
     const webSocket = React.useRef(null);
-
     React.useEffect(() => {
         //конект с сервером
         const user = JSON.parse(localStorage.getItem('user'));
@@ -141,14 +141,12 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
         return logoLike;
     };
 
-    // console.log(allComments)
-
     return (
         <div className={s.wrapper}>
             {sortedCommentsByLike.map(comment => {
                 return (
                     <div key={comment.commentId} className={s.wrapperUserComment}>
-                        <div className={s.avatar}> </div>
+                        <img className={s.avatar} src={logoNoAvatar} alt="no-avatar" />
                         <div>
                             <h4 className={s.author}>{`${comment.firstName} ${comment.secondName}`}</h4>
 

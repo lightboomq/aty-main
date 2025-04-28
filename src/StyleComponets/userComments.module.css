@@ -12,11 +12,8 @@
     border: none;
 }
 .avatar {
-    min-width: 28px;
-    width: 28px;
-    height: 28px;
-    background-color: rgb(211, 210, 210);
-    border-radius: 50%;
+    width: 30px;
+    height: 30px;
 }
 .author {
     margin-top: 1px;
