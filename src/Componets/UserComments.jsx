@@ -1,7 +1,9 @@
 import React from 'react';
+import CommentReplies from './CommentReplies';
+import InputComment from './InputComment';
+import InputReplyComment from './InputReplyComment';
 import logoLike from '../assets/like.svg';
 import logoRedLike from '../assets/redLike.svg';
-import logoSend from '../assets/sendComment.svg';
 import { io } from 'socket.io-client';
 import Errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
@@ -11,12 +13,10 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userIdFromLocalStorage = user.userId;
     const [allComments, setAllComments] = React.useState([]);
-    const [userComment, setUserComment] = React.useState('');
+    const [targetUserReplyId, setTargetUserReplyId] = React.useState('');
     const [isShowAddComment, setIsShowAddComment] = React.useState(false); //флаг от прыгающей верстки
-    const [isPlaceholder, setIsPlaceholder] = React.useState(true);
 
     const webSocket = React.useRef(null);
-    const inputRef = React.useRef(null);
 
     React.useEffect(() => {
         //конект с сервером
@@ -141,53 +141,18 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
         return logoLike;
     };
 
-    const sendComment = () => {
-        if (!userComment.trim()) return Errors.setMessage('Комментарий не должен быть пустым');
-        webSocket.current.emit('send_comment', {
-            ticketId,
-            questionId,
-            text: userComment,
-        });
-        Errors.setMessage('');
-        setUserComment('');
-        setIsPlaceholder(false);
-        inputRef.current.textContent = '';
-    };
+    // console.log(allComments)
 
-    const handleBlur = () => {
-        if (userComment.trim() === '') return setIsPlaceholder(true);
-        setIsPlaceholder(false);
-    };
-    const handleKeyDown = e => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendComment();
-        }
-    };
-
-    const replyUser = (text, commentId, userId,name) => {
-        console.log(`${name} commentId: `, commentId);
-        console.log(`${name} userId:`, userId);
-        // webSocket.current.emit('send_reply_to_comment', {
-        //     ticketId,
-        //     questionId,
-        //     text,
-        //     rootCommentId: commentId,
-        //     replyToCommentId: commentId,
-        // });
-    };
-console.log(allComments)
     return (
         <div className={s.wrapper}>
             {sortedCommentsByLike.map(comment => {
-                
                 return (
                     <div key={comment.commentId} className={s.wrapperUserComment}>
                         <div className={s.avatar}> </div>
                         <div>
                             <h4 className={s.author}>{`${comment.firstName} ${comment.secondName}`}</h4>
 
-                            <p className={s.text}>{comment.text}</p>
+                            <p className={s.text}>{comment.text.replace(/\s+/g, ' ').trim()}</p>
 
                             <div className={s.wrapperActions}>
                                 <div>
@@ -198,11 +163,13 @@ console.log(allComments)
                                         </button>
                                     ) : (
                                         <button
-                                            onClick={() => replyUser(comment.text, comment.commentId, comment.userId, comment.secondName)}
+                                            onClick={() =>
+                                                setTargetUserReplyId(prev => (prev === comment.commentId ? '' : comment.commentId))
+                                            }
                                             className={s.reply}
                                             type='button'
                                         >
-                                            Ответить
+                                            {targetUserReplyId === comment.commentId ? 'Скрыть' : 'Ответить'}
                                         </button>
                                     )}
                                 </div>
@@ -212,30 +179,29 @@ console.log(allComments)
                                     <span className={s.likesConter}>{comment.likes.length}</span>
                                 </button>
                             </div>
+
+                            {comment.replies && (
+                                <CommentReplies
+                                    replies={comment.replies}
+                                    userIdFromLocalStorage={userIdFromLocalStorage}
+                                    setDateUserComment={setDateUserComment}
+                                />
+                            )}
+                            {targetUserReplyId === comment.commentId && (
+                                <InputReplyComment
+                                    webSocket={webSocket}
+                                    ticketId={ticketId}
+                                    questionId={questionId}
+                                    commentId={comment.commentId}
+                                    targetUserName={comment.firstName}
+                                />
+                            )}
                         </div>
                     </div>
                 );
             })}
-            {isShowAddComment && (
-                <div className={s.wrapperInput}>
-                    <div className={s.avatar}> </div>
 
-                    <div
-                        contentEditable='true'
-                        className={`${s.inputArea} ${isPlaceholder && s.placeholder}`}
-                        onInput={e => setUserComment(e.target.textContent)}
-                        onFocus={() => setIsPlaceholder(false)}
-                        onBlur={handleBlur}
-                        onKeyDown={handleKeyDown}
-                        ref={inputRef}
-                        suppressContentEditableWarning
-                    >
-                        {isPlaceholder && 'Напишите комментарии...'}
-                    </div>
-                    <img onClick={sendComment} className={s.sendComment} src={logoSend} alt='sendComment' />
-                    <span style={{ color: 'red' }}>{Errors.getMessage()}</span>
-                </div>
-            )}
+            {isShowAddComment && <InputComment webSocket={webSocket} ticketId={ticketId} questionId={questionId} />}
         </div>
     );
 }

@@ -1,0 +1,30 @@
+.wrapperInput {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.avatar {
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
+    background-color: rgb(211, 210, 210);
+    border-radius: 50%;
+}
+.inputArea {
+    width: 340px;
+    border-radius: 5px;
+    margin-left: 15px;
+    padding: 6px 12px 7px;
+    border: 1px solid black;
+    font-size: 13px;
+}
+.placeholder{
+    font-size: 13px;
+    color: #747e89;
+}
+.sendComment {
+    width: 27px;
+    height: 27px;
+    margin-left: 10px;
+    cursor: pointer;
+}

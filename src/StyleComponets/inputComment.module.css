@@ -1,0 +1,29 @@
+.wrapperInput {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.avatar {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    background-color: rgb(211, 210, 210);
+    border-radius: 50%;
+}
+.inputArea {
+    width: 428px;
+    border-radius: 5px;
+    margin-left: 15px;
+    padding: 7px 12px 9px;
+    border: 1px solid black;
+}
+.placeholder{
+    font-size: 14px;
+    color: #747e89;
+}
+.sendComment {
+    width: 30px;
+    height: 30px;
+    margin-left: 10px;
+    cursor: pointer;
+}

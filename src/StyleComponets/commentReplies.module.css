@@ -1,45 +1,44 @@
-.wrapper{
-    margin-top: 10px;
-}
 .wrapperUserComment {
     display: grid;
-    grid-template-columns: 38px 1fr;
-    padding: 7px 0px 7px 0px ;
+    grid-template-columns: 34px minmax(0, 1fr);
     word-break: break-word;
+    padding: 7px 0px 7px 0px ;
     border-bottom: 1px solid rgb(228, 225, 225);
 }
 .wrapperUserComment:nth-last-child(2) {
     border: none;
 }
 .avatar {
-    min-width: 28px;
-    width: 28px;
-    height: 28px;
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
     background-color: rgb(211, 210, 210);
     border-radius: 50%;
 }
 .author {
-    margin-top: 1px;
-    font-size: 14px;
+    font-size: 13px;
+    margin-top: 2px;
 }
 .text {
     font-size: 13px;
+    white-space: pre-line;
 }
 .wrapperActions {
     display: flex;
     justify-content: space-between;
-    align-items: center;  
+    align-items: center;
+    height: 17px;
+    margin-top: 4px;
+    font-size: 13px;
 }
 .date {
     color: #747e89;
-    font-size: 13px;
 }
 .reply {
     all: unset;
     cursor: pointer;
     color: #2a5885;
     margin-left: 8px;
-    font-size: 13px;
 }
 .btnLike {
     all: unset;
@@ -47,11 +46,16 @@
     display: flex;
     align-items: center;
 }
-
 .likesConter {
-    font-size: 14px;
+    font-size: 13px;
     margin-left: 5px;
 }
-
-
-
+.wrapperUserComment:hover .btnLike {
+    display: flex;
+}
+.showMoreComment{
+    all:unset;
+    color: #2a5885;
+    font-size: 13px;
+    cursor: pointer;
+}
