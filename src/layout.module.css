@@ -6,8 +6,8 @@
     font-weight: 200;
 }
 
-/* .wrapper{
-    width: 100%;
+.wrapper{
     transition-property: background-color;
     transition-duration: 0.5s;
-} */
+    margin-top: 10px;
+}

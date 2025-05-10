@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from './Header.jsx';
 import NavOfQuestion from './NavOfQuestion.jsx';
 import GoBack from './GoBack.jsx';
 import Timer from './Timer.jsx';
@@ -11,6 +10,8 @@ import Errors from '../store/Errors.js';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import iconComments from '../assets/comments.svg';
+import Loader from './Loader.jsx'
+import Header from './Header.jsx';
 import s from '../StyleComponets/test.module.css';
 
 function Testing() {
@@ -19,10 +20,10 @@ function Testing() {
     const [indexTicket, setIndexTicket] = React.useState(0);
     const [userAnswers, setUserAnswers] = React.useState([0]);
     const [counterComments, setCounterComments] = React.useState({count:0});
-    const [isOpenComments, setIsOpenComments] = React.useState(true);
-
+    const [isOpenComments, setIsOpenComments] = React.useState(false);
+    const [isLoader,setIsLoader] = React.useState(false);
     const navigate = useNavigate();
-
+   
     const states = {
         ticket,
         userAnswers,
@@ -66,7 +67,7 @@ function Testing() {
                 }
                 const data = await res.json();
                 setCounterComments(data);
-                // setIsOpenComments(false)
+                setIsOpenComments(false)
             } catch (err) {
                 Errors.setMessage(err.message);
             }
@@ -83,11 +84,11 @@ function Testing() {
             return navigate('/result');
         }
     }, [userAnswers, ticket, navigate]);
-
+   
     return (
         <div className={`${s.wrapper} ${s[ModeStorage.theme]}`}>
             <div className={`${s.wrapperContent} ${s[ModeStorage.theme]}`}>
-                <Header />
+                <Header/>
                 <NavOfQuestion {...states} />
                 <div className={s.wrapperTimer}>
                     {typeTest !== 'Экзамен' && <GoBack />}
@@ -100,12 +101,14 @@ function Testing() {
                 <div className={s.wrapperCountComments} onClick={() => setIsOpenComments(!isOpenComments)}>
                     <img src={iconComments} alt='comments' />
                     <p className={s.countComments}>Комментарии: {counterComments.count}</p>
+                    {isLoader && <Loader color='lightblue'/>}
                 </div>
                 {isOpenComments && (
                     <UserComments
                         ticketId={ticket[indexTicket].ticketId}
                         questionId={ticket[indexTicket].questionId}
                         setCounterComments={setCounterComments}
+                        setIsLoader={setIsLoader}
                     />
                 )}
             </div>

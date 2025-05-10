@@ -26,7 +26,7 @@ function UserResultTest({ theme, setTheme }) {
     //             },
     //         });
     //         const date = await res.json();
-    //         console.log(date);
+    //         
     //     }
 
     //     setExam();

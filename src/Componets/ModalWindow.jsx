@@ -1,7 +1,7 @@
 import s from '../StyleComponets/modalWindow.module.css';
 import { useNavigate } from 'react-router-dom';
 
-function ModalWindow({ path, setIsOpenModal, text }) {
+function ModalWindow({ path, setIsOpenModal, text , func}) {
     const navigate = useNavigate();
 
     return (

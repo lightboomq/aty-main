@@ -6,7 +6,7 @@ import s from '../StyleComponets/question.module.css';
 function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket }) {
     const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
-
+    
     let url = '';
     const typeTest = localStorage.getItem('typeTest');
     
@@ -40,7 +40,6 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         const copyTicket = JSON.parse(JSON.stringify(ticket));
         const copyUserAnswers = userAnswers;
         copyUserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-        console.log(copyUserAnswers)
         setTicket(addPropertyToTicket(copyTicket, id, json));
         setUserAnswers([...copyUserAnswers]);
         setIndexTicket(indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1);

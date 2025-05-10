@@ -9,8 +9,8 @@ function Authorization() {
         localStorage.clear();
     }, []);
 
-    const [mail, setMail] = React.useState('');
-    const [password, setPassword] = React.useState('');
+    const [mail, setMail] = React.useState('solovei@gmail.com');
+    const [password, setPassword] = React.useState('228solovei');
     const navigate = useNavigate();
 
     async function login() {
@@ -28,7 +28,6 @@ function Authorization() {
 
             if (!res.ok) {
                 const err = await res.json();
-                console.log(err);
                 throw err;
             }
             const userData = await res.json();
@@ -44,12 +43,11 @@ function Authorization() {
         <form className={s.wrapper}>
             <h3 className={s.regText}>Вход</h3>
 
-            <h3>sorokin@gmail.com</h3>
-            <h3>228sorokin</h3>
+            <h3>solovei@gmail.com</h3>
+            <h3>228solovei</h3>
             <br />
 
-            <h3>lebedev@gmail.com</h3>
-            <h3>228lebedev</h3>
+            
 
             <label className={s.wrapperInput}>
                 Почта:

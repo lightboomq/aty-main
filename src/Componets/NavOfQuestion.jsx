@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 
 function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
     const typeTest = localStorage.getItem('typeTest');
-
+   
     function highlight(i) {
         if (i === indexTicket) return `${s.questionByNav} ${s.highlightInBlue}`;
         if (userAnswers[i]) return `${s.questionByNav} ${s.highlightInGreen}`;

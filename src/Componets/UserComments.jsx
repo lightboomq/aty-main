@@ -10,7 +10,7 @@ import Errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
 import s from '../StyleComponets/userComments.module.css';
 
-function UserComments({ ticketId, questionId, setCounterComments }) {
+function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userIdFromLocalStorage = user.userId;
     const [allComments, setAllComments] = React.useState([]);
@@ -18,8 +18,10 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
     const [isShowAddComment, setIsShowAddComment] = React.useState(false); //флаг от прыгающей верстки
 
     const webSocket = React.useRef(null);
+
     React.useEffect(() => {
         //конект с сервером
+        setIsLoader(true)
         const user = JSON.parse(localStorage.getItem('user'));
 
         webSocket.current = io('ws://localhost:3333/api/comments', {
@@ -27,12 +29,15 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
                 token: user.token,
             },
         });
-        webSocket.current.on('connect', () => {});
-
+        
+        webSocket.current.on('connect', () => {
+            // console.log('connect')
+        });
+        
         return () => {
             webSocket.current.disconnect();
         };
-    }, []);
+    }, [setIsLoader]);
 
     React.useEffect(() => {
         if (ticketId === undefined) return;
@@ -40,10 +45,11 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
         const handleComments = comments => {
             setAllComments(comments);
             setIsShowAddComment(true);
+            setIsLoader(false)
         };
-
+        
         webSocket.current.on('get_all_comments', handleComments); // получение массива объектов  всех комментарий с сервера
-
+        
         webSocket.current.emit('get_all_comments', {
             //запрос на все комментарий
             ticketId,
@@ -61,18 +67,15 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
                 webSocket.current.off('get_all_comments', handleComments);
             }
         };
-    }, [ticketId, questionId]);
+    }, [ticketId, questionId,setIsLoader]);
+
 
     React.useEffect(() => {
         const handleNewComment = newComment => {
             setAllComments(prev => [newComment, ...prev]);
             setCounterComments(prev => ({ ...prev, count: prev.count + 1 }));
         };
-
-        const handleReplyUser = test => {
-            console.log(test);
-        };
-
+        const handleReplyUser = test => {};
         const handleLikes = usersLiked => {
             const idOfSelectedComment = usersLiked.commentId;
             setAllComments(prev =>
@@ -81,7 +84,6 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
                 ),
             );
         };
-
         const handleDeletedComment = deletedComment => {
             setAllComments(prev => prev.filter(el => el.commentId !== deletedComment.commentId));
             setCounterComments(prev => ({ ...prev, count: prev.count - 1 }));
@@ -94,7 +96,6 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
         webSocket.current.on('like_comment', handleLikes);
         webSocket.current.on('error', handleError);
         return () => {
-            console.log('unmount');
             webSocket.current.off('send_comment', handleNewComment);
             webSocket.current.off('send_reply_to_comment', handleReplyUser);
             webSocket.current.off('delete_comment', handleDeletedComment);
@@ -102,6 +103,9 @@ function UserComments({ ticketId, questionId, setCounterComments }) {
             webSocket.current.off('error', handleError);
         };
     }, [setCounterComments]);
+
+
+
 
     const sortedCommentsByLike = React.useMemo(() => {
         //оптимищация сортировки через хук от ререндеров

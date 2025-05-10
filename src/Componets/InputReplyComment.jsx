@@ -10,9 +10,8 @@ function InputComment({ webSocket, ticketId, questionId, commentId, targetUserNa
     React.useEffect(() => {
         inputRef.current.focus();
     }, []);
-
+    
     const sendReplyToComment = () => {
-        console.log(true)
         webSocket.current.emit('send_reply_to_comment', {
             ticketId,
             questionId,

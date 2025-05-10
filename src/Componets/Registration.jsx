@@ -11,18 +11,18 @@ function Registration() {
     }, []);
 
     
-    const [select, setSelect] = React.useState({ value: '', isNotCorrect: false, err: 'Выберите колонну' });
+    const [select, setSelect] = React.useState({ value: '', isNotValid: false, err: 'Выберите колонну' });
 
     const [formData, setFormData] = React.useState([
-        { value: '', text: 'Имя:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotCorrect: false },
-        { value: '', text: 'Фамилия:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotCorrect: false },
+        { value: '', text: 'Имя:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotValid: false },
+        { value: '', text: 'Фамилия:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotValid: false },
         {
             value: '',
             text: 'Почта:',
             type: 'email',
             regexp: '^[A-Za-z0-9._%+-]+@[a-z0-9-]+\\.[a-z]{2,4}$',
             err: 'Проверьте правильность введённого адреса электронной почты',
-            isNotCorrect: false,
+            isNotValid: false,
         },
         {
             value: '',
@@ -30,15 +30,18 @@ function Registration() {
             type: 'password',
             regexp: '^[^а-яА-Я ]{5,15}$',
             err: 'Любые символы, кроме Кириллицы. Длина пароля от 5 до 15 символов',
-            isNotCorrect: false,
+            isNotValid: false,
         },
     ]);
-
+    
+   
     const navigate = useNavigate();
     async function sendForm() {
-        
+        if (select.value === ''){
+            setSelect(prev=>({...prev,isNotValid:'true'}))
+        }
         for (let i = 0; i < formData.length; i++) {
-            if (formData[i].isNotCorrect || formData[i].value === '' || select.isNotCorrect || select.value === '') return;
+            if (formData[i].isNotValid || formData[i].value === '' || select.isNotValid || select.value === '') return;
         }
         try {
             const res = await fetch('http://localhost:3333/api/auth/register', {
@@ -54,12 +57,12 @@ function Registration() {
                     department: select.value,
                 }),
             });
-
+            
             if (res.ok) {
                 return navigate('/auth');
             }
             const err = await res.json();
-            
+           
             throw new Error(err.message);
         } catch (err) {
             Errors.setMessage(err.message);
@@ -70,11 +73,11 @@ function Registration() {
             <h3 className={s.regText}>Регистрация</h3>
 
             <div className={s.wrapperDiv}>
-                <label className={`${s.wrapperInput} ${s.highlightingInputErr}`}>
+                <label className={`${s.wrapperInput} ${select.isNotValid ? s.highlightingInput:''}`}>
                     Колонна:
                     <select
                         onChange={e => {
-                            setSelect(prev => ({ ...prev, value: e.target.value, isNotCorrect: e.target.value === '' }));
+                            setSelect(prev => ({ ...prev, value: e.target.value, isNotValid: e.target.value === '' }));
                         }}
                         className={s.select}
                     >
@@ -86,7 +89,7 @@ function Registration() {
                         <option value='5'>5</option>
                     </select>
                 </label>
-                <span className={s.highlightingTextErr}>{select.isNotCorrect && select.err}</span>
+                <span className={s.highlightingTextErr}>{select.isNotValid && select.err}</span>
             </div>
 
             {formData.map((obj, i) => {
@@ -99,7 +102,7 @@ function Registration() {
                         type={obj.type}
                         regexp={obj.regexp}
                         err={obj.err}
-                        isNotCorrect={obj.isNotCorrect}
+                        isNotValid={obj.isNotValid}
                         setFormData={setFormData}
                     />
                 );

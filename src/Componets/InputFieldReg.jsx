@@ -1,9 +1,9 @@
 import s from '../StyleComponets/registration.module.css';
 
-function InputFieldReg({ value, i, text, type, regexp, err, isNotCorrect, setFormData }) {
+function InputFieldReg({ value, i, text, type, regexp, err, isNotValid, setFormData }) {
     return (
         <div className={s.wrapperDiv}>
-            <label className={`${s.wrapperInput} ${isNotCorrect ? s.highlightingInput : ''}`}>
+            <label className={`${s.wrapperInput} ${isNotValid ? s.highlightingInput : ''}`}>
                 {text}
                 <input
                     value={value}
@@ -16,7 +16,7 @@ function InputFieldReg({ value, i, text, type, regexp, err, isNotCorrect, setFor
                                     ? {
                                           ...obj,
                                           value: e.target.value,
-                                          isNotCorrect: e.target.value === '' ? false : !newRegExp.test(e.target.value),
+                                          isNotValid: e.target.value === '' ? false : !newRegExp.test(e.target.value),
                                       }
                                     : obj,
                             ),
@@ -27,7 +27,7 @@ function InputFieldReg({ value, i, text, type, regexp, err, isNotCorrect, setFor
                     autoComplete='off'
                 />
             </label>
-            <span className={s.highlightingTextErr}>{isNotCorrect && err}</span>
+            <span className={s.highlightingTextErr}>{isNotValid && err}</span>
         </div>
     );
 }

@@ -18,7 +18,6 @@ function App() {
                 <Route path='/test' element={<Test />} />
                 <Route path='/comments' element={<Comments />} />
                 <Route path='/result' element={<UserTestResult />} />
-                
             </Route>
         </Routes>
     );
