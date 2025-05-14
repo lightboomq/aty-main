@@ -2,19 +2,23 @@
     display: grid;
     grid-template-columns: 34px minmax(0, 1fr);
     word-break: break-word;
-    padding: 7px 0px 7px 0px ;
+    padding: 7px 0px 7px 0px;
     border-bottom: 1px solid rgb(228, 225, 225);
+    transition-property: border;
+    transition-duration: 0.3s;
 }
-.wrapperUserComment:nth-last-child(1) {
-    border: none;
-}
+
 .author {
     font-size: 13px;
     margin-top: 2px;
+    transition-property: color;
+    transition-duration: 0.3s;
 }
 .text {
     font-size: 13px;
     white-space: pre-line;
+    transition-property: color;
+    transition-duration: 0.3s;
 }
 .wrapperActions {
     display: flex;
@@ -32,6 +36,8 @@
     cursor: pointer;
     color: #2a5885;
     margin-left: 8px;
+    transition-property: color;
+    transition-duration: 0.3s;
 }
 .btnLike {
     all: unset;
@@ -46,9 +52,28 @@
 .wrapperUserComment:hover .btnLike {
     display: flex;
 }
-.showMoreComment{
-    all:unset;
+.showMoreComment {
+    all: unset;
     color: #2a5885;
     font-size: 13px;
     cursor: pointer;
+    transition-property: color;
+    transition-duration: 0.3s;
+}
+
+
+.wrapperUserComment.darkMode {
+    border-bottom: 1px solid #070b11;
+}
+.author.darkMode {
+    color: #cdcdcd;
+}
+.text.darkMode {
+    color: #cdcdcd;
+}
+.reply.darkMode {
+    color: #689ee6;
+}
+.showMoreComment.darkMode {
+    color: #689ee6;
 }

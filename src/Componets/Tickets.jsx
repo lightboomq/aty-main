@@ -3,40 +3,47 @@ import Loader from './Loader.jsx';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow.jsx';
+import Errors from '../store/Errors.js';
+import ErrorsMessage from './ErrorsMessage.jsx';
 import s from '../StyleComponets/tickets.module.css';
 
 function Tickets() {
-    
     const user = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate();
 
     const [ticketsId, setTicketsId] = React.useState([]);
     const [isLoaderTicket, setIsLoaderTicket] = React.useState(false);
     const [isOpenModal, setIsOpenModal] = React.useState(false);
-   
-
+    
     React.useEffect(() => {
         async function getCountTickets() {
             const token = JSON.parse(localStorage.getItem('user'));
-            const response = await fetch('http://localhost:3333/api/tickets', {
-                method: 'GET',
-                headers: {
-                    Authorization: `Bearer ${token.token}`,
-                },
-            });
-            const arrTicketsId = await response.json();
-            setTicketsId(arrTicketsId);
+            try {
+                const res = await fetch('http://localhost:3333/api/tickets', {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${token.token}`,
+                    },
+                });
+                if (!res.ok) {
+                    const err = await res.json();
+                    throw err;
+                }
+                const arrTicketsId = await res.json();
+                setTicketsId(arrTicketsId);
+            } catch (err) {
+                 Errors.setMessage(err.message);
+            }
         }
         getCountTickets();
-
     }, []);
-
+   
     async function getTicket(e) {
         if (e.target.tagName !== 'LI' && e.target.tagName !== 'BUTTON') return;
-        
+
         const token = JSON.parse(localStorage.getItem('user'));
         const typeTest = e.target.getAttribute('type-test');
-       
+
         const ticketId = e.target.getAttribute('ticketid');
         const url =
             typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен'
@@ -65,9 +72,8 @@ function Tickets() {
     return (
         <div className={s.wrapper}>
             {isOpenModal && <ModalWindow path='/auth' setIsOpenModal={setIsOpenModal} text='Выйти из учетной записи?' />}
-            
-            <div onClick={getTicket} className={s.wrapperTickets}> 
-            
+
+            <div onClick={getTicket} className={s.wrapperTickets}>
                 {user.isAppointExam ? (
                     <button type-test='Экзамен' className={s.btnExam} type='button'>
                         {isLoaderTicket && <Loader color='orange' />}Сдать экзамен
@@ -86,6 +92,7 @@ function Tickets() {
                     );
                 })}
             </div>
+            {Errors.getMessage() && <ErrorsMessage err={Errors.getMessage()}/>}
         </div>
     );
 }

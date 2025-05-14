@@ -23,6 +23,9 @@
 }
 .wrapperCountComments{
     display: flex;
+    position:relative;
+    align-items:center;
+    max-width:185px;
     margin-top: 10px;
     cursor: pointer;
 }

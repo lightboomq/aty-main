@@ -7,6 +7,8 @@
     padding: 7px 0px 7px 0px ;
     word-break: break-word;
     border-bottom: 1px solid rgb(228, 225, 225);
+    transition-property: border;
+    transition-duration: 0.3s;
 }
 .wrapperUserComment:nth-last-child(2) {
     border: none;
@@ -18,9 +20,13 @@
 .author {
     margin-top: 1px;
     font-size: 14px;
+    transition-property: color;
+    transition-duration: 0.3s;
 }
 .text {
     font-size: 13px;
+    transition-property: color;
+    transition-duration: 0.3s;
 }
 .wrapperActions {
     display: flex;
@@ -44,11 +50,30 @@
     display: flex;
     align-items: center;
 }
-
 .likesConter {
     font-size: 14px;
     margin-left: 5px;
+    transition-property: color;
+    transition-duration: 0.3s;
 }
 
 
 
+.wrapperUserComment.darkMode{
+    border-bottom: 1px solid #070B11;
+}
+.wrapperUserComment.darkMode:nth-last-child(2){
+    border: none;
+}
+.author.darkMode{
+    color:#cdcdcd;
+}
+.text.darkMode{
+    color:#cdcdcd;
+}
+.reply.darkMode{
+    color: #689ee6;
+}
+.likesConter.darkMode{
+    color: #056DF4;
+}

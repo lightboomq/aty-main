@@ -1,27 +1,29 @@
 import React from 'react';
-import CommentReplies from './CommentReplies';
+import UserCommentReplies from './UserCommentReplies.jsx';
 import InputComment from './InputComment';
 import InputReplyComment from './InputReplyComment';
 import logoLike from '../assets/like.svg';
 import logoRedLike from '../assets/redLike.svg';
-import logoNoAvatar from '../assets/noAvatar.png'
+import logoNoAvatar from '../assets/noAvatar.png';
 import { io } from 'socket.io-client';
 import Errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
+import ModeStorage from '../store/ModeStorage.js';
 import s from '../StyleComponets/userComments.module.css';
 
-function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
+function UserComments({ ticketId, questionId, setCounterComments, setIsLoader }) {
     const user = JSON.parse(localStorage.getItem('user'));
     const userIdFromLocalStorage = user.userId;
     const [allComments, setAllComments] = React.useState([]);
     const [targetUserReplyId, setTargetUserReplyId] = React.useState('');
     const [isShowAddComment, setIsShowAddComment] = React.useState(false); //флаг от прыгающей верстки
 
+    const wrapperUserComment = React.useRef(null);
     const webSocket = React.useRef(null);
 
     React.useEffect(() => {
         //конект с сервером
-        setIsLoader(true)
+        setIsLoader(true);
         const user = JSON.parse(localStorage.getItem('user'));
 
         webSocket.current = io('ws://localhost:3333/api/comments', {
@@ -29,11 +31,11 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
                 token: user.token,
             },
         });
-        
+
         webSocket.current.on('connect', () => {
             // console.log('connect')
         });
-        
+
         return () => {
             webSocket.current.disconnect();
         };
@@ -45,11 +47,11 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
         const handleComments = comments => {
             setAllComments(comments);
             setIsShowAddComment(true);
-            setIsLoader(false)
+            setIsLoader(false);
         };
-        
+
         webSocket.current.on('get_all_comments', handleComments); // получение массива объектов  всех комментарий с сервера
-        
+
         webSocket.current.emit('get_all_comments', {
             //запрос на все комментарий
             ticketId,
@@ -67,15 +69,25 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
                 webSocket.current.off('get_all_comments', handleComments);
             }
         };
-    }, [ticketId, questionId,setIsLoader]);
-
+    }, [ticketId, questionId, setIsLoader]);
 
     React.useEffect(() => {
         const handleNewComment = newComment => {
             setAllComments(prev => [newComment, ...prev]);
             setCounterComments(prev => ({ ...prev, count: prev.count + 1 }));
         };
-        const handleReplyUser = test => {};
+        const handleReplyUser = userReply => {
+            setAllComments(prev =>
+                prev.map(comment =>
+                    comment.commentId === userReply.replyInfo.replyToCommentId
+                        ? {
+                              ...comment,
+                              replies: [...(comment.replies || []), userReply],
+                          }
+                        : comment,
+                ),
+            );
+        };
         const handleLikes = usersLiked => {
             const idOfSelectedComment = usersLiked.commentId;
             setAllComments(prev =>
@@ -103,9 +115,6 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
             webSocket.current.off('error', handleError);
         };
     }, [setCounterComments]);
-
-
-
 
     const sortedCommentsByLike = React.useMemo(() => {
         //оптимищация сортировки через хук от ререндеров
@@ -149,18 +158,22 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
         <div className={s.wrapper}>
             {sortedCommentsByLike.map(comment => {
                 return (
-                    <div key={comment.commentId} className={s.wrapperUserComment}>
-                        <img className={s.avatar} src={logoNoAvatar} alt="no-avatar" />
+                    <div key={comment.commentId} ref={wrapperUserComment} className={`${s.wrapperUserComment} ${s[ModeStorage.theme]}`}>
+                        <img className={s.avatar} src={logoNoAvatar} alt='no-avatar' />
                         <div>
-                            <h4 className={s.author}>{`${comment.firstName} ${comment.secondName}`}</h4>
+                            <h4 className={`${s.author} ${s[ModeStorage.theme]}`}>{`${comment.firstName} ${comment.secondName}`}</h4>
 
-                            <p className={s.text}>{comment.text.replace(/\s+/g, ' ').trim()}</p>
+                            <p className={`${s.text} ${s[ModeStorage.theme]}`}>{comment.text.replace(/\s+/g, ' ').trim()}</p>
 
                             <div className={s.wrapperActions}>
                                 <div>
                                     <time className={s.date}>{setDateUserComment(comment.time)}</time>
                                     {comment.userId === userIdFromLocalStorage ? (
-                                        <button onClick={() => deleteComment(comment.commentId)} className={s.reply} type='button'>
+                                        <button
+                                            onClick={() => deleteComment(comment.commentId)}
+                                            className={`${s.reply} ${s[ModeStorage.theme]}`}
+                                            type='button'
+                                        >
                                             Удалить
                                         </button>
                                     ) : (
@@ -168,7 +181,7 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
                                             onClick={() =>
                                                 setTargetUserReplyId(prev => (prev === comment.commentId ? '' : comment.commentId))
                                             }
-                                            className={s.reply}
+                                            className={`${s.reply} ${s[ModeStorage.theme]}`}
                                             type='button'
                                         >
                                             {targetUserReplyId === comment.commentId ? 'Скрыть' : 'Ответить'}
@@ -178,12 +191,12 @@ function UserComments({ ticketId, questionId,setCounterComments,setIsLoader }) {
 
                                 <button onClick={() => like(comment.commentId)} type='button' className={s.btnLike}>
                                     <img src={highlightLike(comment.likes)} alt='like' />
-                                    <span className={s.likesConter}>{comment.likes.length}</span>
+                                    <span className={`${s.likesConter} ${s[ModeStorage.theme]}`}>{comment.likes.length}</span>
                                 </button>
                             </div>
 
                             {comment.replies && (
-                                <CommentReplies
+                                <UserCommentReplies
                                     replies={comment.replies}
                                     userIdFromLocalStorage={userIdFromLocalStorage}
                                     setDateUserComment={setDateUserComment}

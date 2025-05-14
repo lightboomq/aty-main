@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import iconComments from '../assets/comments.svg';
 import Loader from './Loader.jsx'
 import Header from './Header.jsx';
+import ErrorsMessage from './ErrorsMessage.jsx';
 import s from '../StyleComponets/test.module.css';
 
 function Testing() {
@@ -87,6 +88,8 @@ function Testing() {
    
     return (
         <div className={`${s.wrapper} ${s[ModeStorage.theme]}`}>
+            {Errors.getMessage() && <ErrorsMessage err={Errors.getMessage()}/>}
+
             <div className={`${s.wrapperContent} ${s[ModeStorage.theme]}`}>
                 <Header/>
                 <NavOfQuestion {...states} />
@@ -101,7 +104,7 @@ function Testing() {
                 <div className={s.wrapperCountComments} onClick={() => setIsOpenComments(!isOpenComments)}>
                     <img src={iconComments} alt='comments' />
                     <p className={s.countComments}>Комментарии: {counterComments.count}</p>
-                    {isLoader && <Loader color='lightblue'/>}
+                    {isLoader && <Loader color='#056DF4' width={22} height={22} positionRight={0}/>}
                 </div>
                 {isOpenComments && (
                     <UserComments

@@ -43,12 +43,6 @@ function Authorization() {
         <form className={s.wrapper}>
             <h3 className={s.regText}>Вход</h3>
 
-            <h3>solovei@gmail.com</h3>
-            <h3>228solovei</h3>
-            <br />
-
-            
-
             <label className={s.wrapperInput}>
                 Почта:
                 <input value={mail} onChange={e => setMail(e.target.value)} className={s.input} type='text' />

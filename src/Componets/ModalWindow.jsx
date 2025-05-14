@@ -1,7 +1,7 @@
 import s from '../StyleComponets/modalWindow.module.css';
 import { useNavigate } from 'react-router-dom';
 
-function ModalWindow({ path, setIsOpenModal, text , func}) {
+function ModalWindow({ path, setIsOpenModal, text }) {
     const navigate = useNavigate();
 
     return (
@@ -15,7 +15,7 @@ function ModalWindow({ path, setIsOpenModal, text , func}) {
                     </button>
 
                     <button onClick={() => setIsOpenModal(false)} className={`${s.btn} ${s.btnNo}`} type='button'>
-                        Нет
+                        Отмена
                     </button>
                 </div>
             </div>

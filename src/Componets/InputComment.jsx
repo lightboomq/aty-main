@@ -2,6 +2,7 @@ import React from 'react';
 import Errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
 import logoSend from '../assets/sendComment.svg';
+import ModeStorage from '../store/ModeStorage.js'
 import s from '../StyleComponets/inputComment.module.css';
 function InputComment({ webSocket, ticketId, questionId }) {
 
@@ -9,7 +10,7 @@ function InputComment({ webSocket, ticketId, questionId }) {
     const [isPlaceholder, setIsPlaceholder] = React.useState(true);
     const inputRef = React.useRef(null);
 
-
+    
     const sendComment = () => {
         if (!userComment.trim()) return Errors.setMessage('Комментарий не должен быть пустым');
         webSocket.current.emit('send_comment', {
@@ -21,11 +22,11 @@ function InputComment({ webSocket, ticketId, questionId }) {
         Errors.setMessage('');
         setUserComment('');
         setIsPlaceholder(true);
+        inputRef.current.blur();
         inputRef.current.textContent = '';
     };
     const handleBlur = () => {
         if (userComment.trim() === '') return setIsPlaceholder(true);
-        setIsPlaceholder(false);
     };
     const handleKeyDown = e => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -38,7 +39,7 @@ function InputComment({ webSocket, ticketId, questionId }) {
             <div className={s.avatar}> </div>
             <div
                 contentEditable='true'
-                className={`${s.inputArea} ${isPlaceholder && s.placeholder}`}
+                className={`${s.inputArea} ${isPlaceholder && s.placeholder} ${s[ModeStorage.theme]}`}
                 onInput={e => setUserComment(e.target.textContent)}
                 onFocus={() => setIsPlaceholder(false)}
                 onBlur={handleBlur}

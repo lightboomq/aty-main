@@ -27,3 +27,7 @@
     margin-left: 10px;
     cursor: pointer;
 }
+.inputArea.darkMode{
+    border: 1px solid #cdcdcd;
+    color:#cdcdcd;
+}

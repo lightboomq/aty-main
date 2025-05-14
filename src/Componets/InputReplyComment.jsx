@@ -1,6 +1,7 @@
 import React from 'react';
 import Errors from '../store/Errors';
 import logoSend from '../assets/sendComment.svg';
+import ModeStorage from '../store/ModeStorage.js';
 import s from '../StyleComponets/inputReplyComment.module.css';
 function InputComment({ webSocket, ticketId, questionId, commentId, targetUserName }) {
     const [userComment, setUserComment] = React.useState('');
@@ -10,7 +11,7 @@ function InputComment({ webSocket, ticketId, questionId, commentId, targetUserNa
     React.useEffect(() => {
         inputRef.current.focus();
     }, []);
-    
+
     const sendReplyToComment = () => {
         webSocket.current.emit('send_reply_to_comment', {
             ticketId,
@@ -19,15 +20,15 @@ function InputComment({ webSocket, ticketId, questionId, commentId, targetUserNa
             rootCommentId: commentId,
             replyToCommentId: commentId,
         });
+        Errors.setMessage('');
+        setUserComment('');
+        setIsPlaceholder(true);
+        inputRef.current.blur();
         inputRef.current.textContent = '';
-        inputRef.current.focus();
     };
 
     const handleBlur = () => {
-        if (userComment.trim() === '') {
-            return setIsPlaceholder(true);
-        }
-        setIsPlaceholder(false);
+        if (userComment.trim() === '') return setIsPlaceholder(true);
     };
     const handleKeyDown = e => {
         if (e.key === 'Enter' && !e.shiftKey) {
@@ -40,7 +41,7 @@ function InputComment({ webSocket, ticketId, questionId, commentId, targetUserNa
             <div className={s.avatar}> </div>
             <div
                 contentEditable='true'
-                className={`${s.inputArea} ${isPlaceholder && s.placeholder}`}
+                className={`${s.inputArea} ${isPlaceholder && s.placeholder} ${s[ModeStorage.theme]}`}
                 onInput={e => setUserComment(e.target.textContent)}
                 onFocus={() => setIsPlaceholder(false)}
                 onBlur={handleBlur}
