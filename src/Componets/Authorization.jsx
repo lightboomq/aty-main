@@ -1,8 +1,6 @@
 import React from 'react';
-import s from '../StyleComponets/authorization.module.css';
-import Errors from '../store/Errors';
-import { observer } from 'mobx-react-lite';
 import { Link, useNavigate } from 'react-router-dom';
+import s from '../StyleComponets/authorization.module.css';
 
 function Authorization() {
     React.useEffect(() => {
@@ -11,6 +9,7 @@ function Authorization() {
 
     const [mail, setMail] = React.useState('solovei@gmail.com');
     const [password, setPassword] = React.useState('228solovei');
+    const [err, setErr] = React.useState('');
     const navigate = useNavigate();
 
     async function login() {
@@ -35,7 +34,7 @@ function Authorization() {
             localStorage.setItem('user', JSON.stringify(userData));
             navigate('/tickets');
         } catch (err) {
-            Errors.setMessage(err.message);
+            setErr(err.message);
         }
     }
 
@@ -68,9 +67,9 @@ function Authorization() {
                     Нету аккаунта? Зарегестрируйтесь
                 </Link>
             </div>
-            <div className={s.error}>{Errors.getMessage()}</div>
+            <div className={s.error}>{err}</div>
         </form>
     );
 }
 
-export default observer(Authorization);
+export default Authorization;

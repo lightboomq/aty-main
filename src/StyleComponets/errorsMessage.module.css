@@ -3,8 +3,8 @@
     display: flex;
     align-items: center;
     background-color: rgb(240, 240, 240);
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
+    bottom: -45px;
+    right: 10px;
     padding: 10px;
     border-radius: 10px;
     animation: wrapper ease-in-out 0.3s forwards;
@@ -25,11 +25,11 @@
 
 @keyframes wrapper{
     from{
-        transform: translateX(-50%) translateY(-20px);
+        bottom: -45px;
         opacity: 0;
     }
     to{
-        transform:translateX(-50%) translateY(0);
+        bottom: 10px;
         opacity: 1;
     }
 }

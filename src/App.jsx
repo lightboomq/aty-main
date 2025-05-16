@@ -6,6 +6,7 @@ import Tickets from './Componets/Tickets.jsx';
 import Test from './Componets/Test.jsx';
 import Comments from './Componets/UserComments.jsx';
 import UserTestResult from './Componets/UserTestResult.jsx';
+import ParentComponent from './Componets/ParentComponent.jsx';
 import Layout from './Layout.jsx';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
         <Routes>
             <Route element={<Layout />}>
                 <Route path='/' element={<Registration />} />
+                {/* <Route path='/' element={<ParentComponent />} /> */}
                 <Route path='/auth' element={<Authorization />} />
                 <Route path='/tickets' element={<Tickets />} />
                 <Route path='/test' element={<Test />} />

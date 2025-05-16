@@ -4,7 +4,6 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import ModalWindow from './ModalWindow.jsx';
 import Errors from '../store/Errors.js';
-import ErrorsMessage from './ErrorsMessage.jsx';
 import s from '../StyleComponets/tickets.module.css';
 
 function Tickets() {
@@ -92,7 +91,7 @@ function Tickets() {
                     );
                 })}
             </div>
-            {Errors.getMessage() && <ErrorsMessage err={Errors.getMessage()}/>}
+            
         </div>
     );
 }

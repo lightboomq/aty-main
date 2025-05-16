@@ -1,12 +1,14 @@
 
 .loader {
     position: absolute;
+    color:rgb(2, 2, 2);
     width: 35px;
     height: 35px;
     border-radius: 50%;
     display: inline-block;
     box-sizing: border-box;
     animation: rotation 2s linear infinite;
+    z-index: 2;
   }
   @keyframes rotation {
     0% {

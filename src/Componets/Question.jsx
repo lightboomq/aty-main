@@ -1,15 +1,16 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 import ModeStorage from '../store/ModeStorage.js';
+import errors from '../store/Errors.js';
 import s from '../StyleComponets/question.module.css';
 
-function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket }) {
+function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket,setIsLoaderOfNav }) {
     const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
-    
+
     let url = '';
     const typeTest = localStorage.getItem('typeTest');
-    
+
     if (typeTest === 'Экзамен') {
         url = 'http://localhost:3333/api/exam';
     } else if (typeTest === 'Тренировочный экзамен') {
@@ -23,28 +24,36 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         const id = e.target.getAttribute('answerid');
         const ticketId = ticket[indexTicket].ticketId;
 
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${user.token}`,
-            },
-            body: JSON.stringify({
-                ticketId: ticketId,
-                questionId: questionId,
-                answerId: id,
-            }),
-        });
+        try {
+            setIsLoaderOfNav(true);
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user.token}`,
+                },
+                body: JSON.stringify({
+                    ticketId: ticketId,
+                    questionId: questionId,
+                    answerId: id,
+                }),
+            });
+            
+            if (!res.ok) {
+                const err = await res.json();
+                throw err || 'Ошибка запроса повторите позже';
+            }
+            const data = await res.json();
 
-        const json = await response.json();
-        const copyTicket = JSON.parse(JSON.stringify(ticket));
-        const copyUserAnswers = userAnswers;
-        copyUserAnswers.splice(indexTicket, 1, json.isCorrect ? 1 : 0);
-        setTicket(addPropertyToTicket(copyTicket, id, json));
-        setUserAnswers([...copyUserAnswers]);
-        setIndexTicket(indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1);
-
-        takeStepAfterAnswering(indexTicket);
+            const nextIndex = indexTicket === ticket.length - 1 ? indexTicket : indexTicket + 1;
+            setUserAnswers(prev => [...prev.slice(0, indexTicket), data.isCorrect ? 1 : 0, ...prev.slice(indexTicket + 1)]);
+            setTicket(prev => addPropertyToTicket(structuredClone(prev), id, data));
+            setIndexTicket(nextIndex);
+            takeStepAfterAnswering(indexTicket);
+            setIsLoaderOfNav(false);
+        } catch (err) {
+            errors.setMessage(err.message);
+        }
     }
 
     function addPropertyToTicket(copyTicket, id, json) {

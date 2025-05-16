@@ -20,7 +20,7 @@ function UserComments({ ticketId, questionId, setCounterComments, setIsLoader })
 
     const wrapperUserComment = React.useRef(null);
     const webSocket = React.useRef(null);
-
+    console.log(allComments)
     React.useEffect(() => {
         //конект с сервером
         setIsLoader(true);

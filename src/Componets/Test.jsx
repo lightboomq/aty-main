@@ -23,6 +23,7 @@ function Testing() {
     const [counterComments, setCounterComments] = React.useState({count:0});
     const [isOpenComments, setIsOpenComments] = React.useState(false);
     const [isLoader,setIsLoader] = React.useState(false);
+    const [isLoaderOfNav,setIsLoaderOfNav] = React.useState(false);
     const navigate = useNavigate();
    
     const states = {
@@ -32,8 +33,10 @@ function Testing() {
         setTicket,
         setUserAnswers,
         setIndexTicket,
+        isLoaderOfNav,
+        setIsLoaderOfNav
     };
-
+    
     React.useEffect(() => {
         const localeStorageTicket = JSON.parse(localStorage.getItem('ticketJson'));
         const arr = [];

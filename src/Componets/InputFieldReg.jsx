@@ -1,6 +1,7 @@
 import s from '../StyleComponets/registration.module.css';
 
-function InputFieldReg({ value, i, text, type, regexp, err, isNotValid, setFormData }) {
+function InputFieldReg({ value, i, text, type, regexp, err, isNotValid, setFields }) {
+
     return (
         <div className={s.wrapperDiv}>
             <label className={`${s.wrapperInput} ${isNotValid ? s.highlightingInput : ''}`}>
@@ -10,7 +11,7 @@ function InputFieldReg({ value, i, text, type, regexp, err, isNotValid, setFormD
                     onChange={e => {
                         const newRegExp = new RegExp(regexp);
 
-                        setFormData(prev =>
+                        setFields(prev =>
                             prev.map((obj, index) =>
                                 index === i
                                     ? {

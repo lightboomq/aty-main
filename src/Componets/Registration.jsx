@@ -1,8 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import InputFieldReg from './InputFieldReg.jsx';
-import Errors from '../store/Errors';
-import {observer} from 'mobx-react-lite';
 import s from '../StyleComponets/registration.module.css';
 
 function Registration() {
@@ -10,10 +8,10 @@ function Registration() {
         localStorage.clear();
     }, []);
 
-    
-    const [select, setSelect] = React.useState({ value: '', isNotValid: false, err: 'Выберите колонну' });
+    const [err, setErr] = React.useState('');
+    const [department, setDepartment] = React.useState({ value: '', isNotValid: false, err: 'Выберите колонну' });
 
-    const [formData, setFormData] = React.useState([
+    const [fields, setFields] = React.useState([
         { value: '', text: 'Имя:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotValid: false },
         { value: '', text: 'Фамилия:', type: 'text', regexp: '^[а-яА-Я ]+$', err: 'Ввeдите Кириллицу', isNotValid: false },
         {
@@ -23,6 +21,7 @@ function Registration() {
             regexp: '^[A-Za-z0-9._%+-]+@[a-z0-9-]+\\.[a-z]{2,4}$',
             err: 'Проверьте правильность введённого адреса электронной почты',
             isNotValid: false,
+            isEmpty: true,
         },
         {
             value: '',
@@ -33,16 +32,27 @@ function Registration() {
             isNotValid: false,
         },
     ]);
-    
-   
+
     const navigate = useNavigate();
-    async function sendForm() {
-        if (select.value === ''){
-            setSelect(prev=>({...prev,isNotValid:'true'}))
+
+    async function sendUserData(e) {
+
+        e.preventDefault();
+        if (department.value === '') {
+            setDepartment(prev => ({ ...prev, isNotValid: 'true' }));
         }
-        for (let i = 0; i < formData.length; i++) {
-            if (formData[i].isNotValid || formData[i].value === '' || select.isNotValid || select.value === '') return;
+
+        setFields(prev =>
+            prev.map(field => ({
+                ...field,
+                isNotValid: field.value === '' || field.isNotValid,
+            })),
+        );
+
+        for (let i = 0; i < fields.length; i++) {
+            if (fields[i].isNotValid || fields[i].value === '' || department.isNotValid || department.value === '') return;
         }
+
         try {
             const res = await fetch('http://localhost:3333/api/auth/register', {
                 method: 'POST',
@@ -50,36 +60,35 @@ function Registration() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    firstName: formData[0].value[0].toUpperCase() + formData[0].value.slice(1).toLowerCase(),
-                    secondName: formData[1].value[0].toUpperCase() + formData[1].value.slice(1).toLowerCase(),
-                    email: formData[2].value,
-                    password: formData[3].value,
-                    department: select.value,
+                    firstName: fields[0].value[0].toUpperCase() + fields[0].value.slice(1).toLowerCase(),
+                    secondName: fields[1].value[0].toUpperCase() + fields[1].value.slice(1).toLowerCase(),
+                    email: fields[2].value,
+                    password: fields[3].value,
+                    department: department.value,
                 }),
             });
-            
+
             if (res.ok) {
                 return navigate('/auth');
             }
             const err = await res.json();
-           
-            throw new Error(err.message);
+            throw err;
         } catch (err) {
-            Errors.setMessage(err.message);
+            setErr(err.message);
         }
     }
     return (
-        <form className={s.wrapper}>
+        <form onSubmit={sendUserData} className={s.wrapper}>
             <h3 className={s.regText}>Регистрация</h3>
 
             <div className={s.wrapperDiv}>
-                <label className={`${s.wrapperInput} ${select.isNotValid ? s.highlightingInput:''}`}>
+                <label className={`${s.wrapperInput} ${department.isNotValid ? s.highlightingInput : ''}`}>
                     Колонна:
                     <select
                         onChange={e => {
-                            setSelect(prev => ({ ...prev, value: e.target.value, isNotValid: e.target.value === '' }));
+                            setDepartment(prev => ({ ...prev, value: e.target.value, isNotValid: e.target.value === '' }));
                         }}
-                        className={s.select}
+                        className={s.department}
                     >
                         <option value=''>Не выбрано</option>
                         <option value='1'>1</option>
@@ -89,29 +98,29 @@ function Registration() {
                         <option value='5'>5</option>
                     </select>
                 </label>
-                <span className={s.highlightingTextErr}>{select.isNotValid && select.err}</span>
+                <span className={s.highlightingTextErr}>{department.isNotValid && department.err}</span>
             </div>
 
-            {formData.map((obj, i) => {
+            {fields.map((field, i) => {
                 return (
                     <InputFieldReg
-                        key={obj.text}
-                        value={obj.value}
+                        key={field.text}
+                        value={field.value}
                         i={i}
-                        text={obj.text}
-                        type={obj.type}
-                        regexp={obj.regexp}
-                        err={obj.err}
-                        isNotValid={obj.isNotValid}
-                        setFormData={setFormData}
+                        text={field.text}
+                        type={field.type}
+                        regexp={field.regexp}
+                        err={field.err}
+                        isNotValid={field.isNotValid}
+                        setFields={setFields}
                     />
                 );
             })}
             <div className={s.wrapperDiv}>
-                <span className={s.highlightingTextErr}>{Errors.getMessage()}</span>
+                <span className={s.highlightingTextErr}>{err}</span>
             </div>
-            
-            <button onClick={sendForm} className={s.btnReg} type='button'>
+
+            <button type='submit' className={s.btnReg}>
                 Зарегистрироваться
             </button>
 
@@ -124,4 +133,4 @@ function Registration() {
     );
 }
 
-export default observer(Registration);
+export default Registration;

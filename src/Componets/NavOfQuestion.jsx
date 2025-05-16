@@ -1,9 +1,11 @@
 import React from 'react';
-import s from '../StyleComponets/navOfQuestion.module.css';
 import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
+import Loader from './Loader.jsx';
+import s from '../StyleComponets/navOfQuestion.module.css';
 
-function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
+
+function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket,isLoaderOfNav }) {
     const typeTest = localStorage.getItem('typeTest');
    
     function highlight(i) {
@@ -43,6 +45,7 @@ function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
 
     return (
         <ol id={'navOl'} ref={navOl} onClick={getQuestionByNav} className={s.olWrapper}>
+             
             {ticket.map((obj, i) => {
                 return (
                     <li
@@ -51,6 +54,7 @@ function NavOfQuestion({ ticket, userAnswers, indexTicket, setIndexTicket }) {
                         className={typeTest === 'Экзамен' || typeTest === 'Тренировочный экзамен' ? highlightExam(i) : highlight(i)}
                     >
                         {i + 1}
+                       {i === indexTicket && isLoaderOfNav ? <Loader color=' #5DADEC' width={30} height={30}/>:''}
                     </li>
                 );
             })}

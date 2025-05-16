@@ -1,26 +1,26 @@
 import React from 'react';
 import errorIcon from '../assets/errorIcon.svg';
-import Errors from '../store/Errors';
+import errors from '../store/Errors';
+import { observer } from 'mobx-react-lite';
 import s from '../StyleComponets/errorsMessage.module.css';
-function ErrorsMessage({ err }) {
-    const [isShowError, setIsShowError] = React.useState(true);
+
+function ErrorsMessage() {
     React.useEffect(() => {
         const timerId = setTimeout(() => {
-            setIsShowError(false);
-            Errors.setMessage('')
+            errors.setMessage('');
         }, 10000);
 
         return () => {
             clearTimeout(timerId);
         };
     }, []);
-
+console.log(errors.getMessage(''))
     return (
         <>
-            {isShowError && (
+            {errors.getMessage() && (
                 <div className={s.wrapper}>
                     <img src={errorIcon} alt='err' />
-                    <p className={s.textErr}>{err}</p>
+                    <p className={s.textErr}>{errors.getMessage()}</p>
                     <div className={s.line}> </div>
                 </div>
             )}
@@ -28,4 +28,4 @@ function ErrorsMessage({ err }) {
     );
 }
 
-export default ErrorsMessage;
+export default observer(ErrorsMessage);
