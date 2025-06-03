@@ -1,10 +1,9 @@
-import React from 'react';
 import { observer } from 'mobx-react-lite';
 import ModeStorage from '../store/ModeStorage.js';
 import errors from '../store/Errors.js';
 import s from '../StyleComponets/question.module.css';
 
-function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket,setIsLoaderOfNav }) {
+function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket, setIndexTicket, setIsLoaderOfNav }) {
     const { question, questionId } = ticket[indexTicket];
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -19,7 +18,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         url = 'http://localhost:3333/api/tickets';
     }
 
-    async function giveAnswerOnQuestion(e) {
+    const giveAnswerOnQuestion = async e => {
         if (e.target.tagName !== 'LI') return;
         const id = e.target.getAttribute('answerid');
         const ticketId = ticket[indexTicket].ticketId;
@@ -38,7 +37,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
                     answerId: id,
                 }),
             });
-            
+
             if (!res.ok) {
                 const err = await res.json();
                 throw err || 'Ошибка запроса повторите позже';
@@ -54,9 +53,9 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         } catch (err) {
             errors.setMessage(err.message);
         }
-    }
+    };
 
-    function addPropertyToTicket(copyTicket, id, json) {
+    const addPropertyToTicket = (copyTicket, id, json) => {
         const answers = copyTicket[indexTicket].answers;
         const indexSelectedAnswer = answers.findIndex(el => el.answerId === id);
         const indexCorrectAnswer = answers.findIndex(el => el.answerId === json.correctAnswer);
@@ -66,11 +65,12 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         copyTicket[indexTicket].help = json.help;
 
         return copyTicket;
-    }
+    };
 
-    function takeStepAfterAnswering(indexTicket) {
+    const takeStepAfterAnswering = indexTicket => {
         let step = indexTicket;
         step++;
+
         while (userAnswers[step] !== null && userAnswers.includes(null)) {
             if (step === ticket.length) {
                 step = 0;
@@ -89,7 +89,7 @@ function Question({ ticket, setTicket, userAnswers, setUserAnswers, indexTicket,
         });
 
         return setIndexTicket(step);
-    }
+    };
 
     return (
         <>

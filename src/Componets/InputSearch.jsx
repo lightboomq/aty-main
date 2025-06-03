@@ -11,6 +11,7 @@ function Input({ inputValue, setInputValue, ticketsFound }) {
         ModeStorage.setFlagTheme();
         setIsOpenModal(true)
     }
+    console.log(true)
     const [isOpenModal,setIsOpenModal] = React.useState(false);
     return (
         <>

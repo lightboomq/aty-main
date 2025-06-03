@@ -1,5 +1,6 @@
 import React from 'react';
 import errorIcon from '../assets/errorIcon.svg';
+import closeErrorIcon from '../assets/crossInput.svg';
 import errors from '../store/Errors';
 import { observer } from 'mobx-react-lite';
 import s from '../StyleComponets/errorsMessage.module.css';
@@ -14,13 +15,14 @@ function ErrorsMessage() {
             clearTimeout(timerId);
         };
     }, []);
-console.log(errors.getMessage(''))
+    
     return (
         <>
             {errors.getMessage() && (
                 <div className={s.wrapper}>
                     <img src={errorIcon} alt='err' />
                     <p className={s.textErr}>{errors.getMessage()}</p>
+                    <img onClick={() => errors.setMessage('')} src={closeErrorIcon} className={s.closeError} alt='close'/>
                     <div className={s.line}> </div>
                 </div>
             )}
