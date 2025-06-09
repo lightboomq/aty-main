@@ -8,29 +8,6 @@ import ModeStorage from '../store/ModeStorage.js';
 import { observer } from 'mobx-react-lite';
 
 function UserResultTest({ theme, setTheme }) {
-    // const user = JSON.parse(localStorage.getItem('user')); Этот код под вопросом
-    // let url = '';
-    // if (typeTest === 'Экзамен') {
-    //     url = 'http://localhost:3333/api/exam/getResult';
-    // } else {
-    //     url = 'http://localhost:3333/api/exam/getTrainingResult';
-    // }
-
-    // React.useEffect(() => {
-    //     async function setExam() {
-    //         const res = await fetch(url, {
-
-    //             method: 'GET',
-    //             headers: {
-    //                 Authorization: `Bearer ${user.token}`,
-    //             },
-    //         });
-    //         const date = await res.json();
-    //         
-    //     }
-
-    //     setExam();
-    // }, [user.token, url]);
 
     const typeTest = localStorage.getItem('typeTest');
     const ticket = JSON.parse(localStorage.getItem('readyTicket'));

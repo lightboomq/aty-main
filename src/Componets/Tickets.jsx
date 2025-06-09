@@ -9,7 +9,7 @@ import s from '../StyleComponets/tickets.module.css';
 
 function Tickets() {
     const navigate = useNavigate();
-    const user = localStorage.getItem('user');
+    const user = JSON.parse(localStorage.getItem('user'));
 
     const wrapperTickets = React.useRef(null);
     const [ticketsId, setTicketsId] = React.useState([]);
